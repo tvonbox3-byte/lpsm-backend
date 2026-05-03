@@ -28,80 +28,63 @@ body{
 .overlay{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.10);
+  background:rgba(0,0,0,.04);
   z-index:-1;
 }
 
 .top{
-  height:95px;
+  height:105px;
   display:flex;
   justify-content:space-between;
   align-items:flex-start;
-  padding:32px 60px 0;
+  padding:36px 70px 0;
 }
 
 .date{
   color:#00d6c8;
-  font-size:22px;
+  font-size:24px;
   font-weight:bold;
+  white-space:nowrap;
 }
 
 .icons{
   display:flex;
   align-items:center;
-  gap:22px;
-  font-size:38px;
+  gap:20px;
 }
 
 .icons span{
   cursor:pointer;
-}
-
-.logo{
-  position:absolute;
-  top:95px;
-  left:60px;
-  width:260px;
-  height:60px;
-  border-radius:8px;
-  background:rgba(0,0,0,.70);
-  display:flex;
-  align-items:center;
-  padding:5px 12px;
-  overflow:hidden;
-}
-
-.logo img{
-  max-width:100%;
-  max-height:100%;
-  object-fit:contain;
-}
-
-.logo:empty{
-  display:none;
+  color:#00d6c8;
+  font-size:36px;
+  line-height:1;
 }
 
 .content{
-  padding:95px 70px 70px;
+  padding:95px 75px 75px;
 }
 
 .main-grid{
   display:grid;
-  grid-template-columns:150px 150px 1fr;
+  grid-template-columns:repeat(3,150px) 1fr;
   gap:22px;
-  min-height:230px;
+  align-items:stretch;
 }
 
 .main-app,
 .app{
-  background:rgba(0,0,0,.45);
-  border-radius:12px;
+  background:rgba(0,0,0,.42);
+  border-radius:13px;
   text-align:center;
   padding:14px 8px;
   display:flex;
   flex-direction:column;
   align-items:center;
   justify-content:center;
+}
+
+.main-app{
+  min-height:230px;
 }
 
 .main-app img{
@@ -112,8 +95,8 @@ body{
 }
 
 .app img{
-  width:62px;
-  height:62px;
+  width:58px;
+  height:58px;
   object-fit:contain;
   margin-bottom:6px;
 }
@@ -125,8 +108,8 @@ body{
 }
 
 .banner{
-  background:rgba(0,0,0,.55);
-  border-radius:12px;
+  background:rgba(255,255,255,.28);
+  border-radius:13px;
   overflow:hidden;
   min-height:230px;
   display:flex;
@@ -140,17 +123,15 @@ body{
   object-fit:cover;
 }
 
-.no-banner{
-  color:#fff;
-  font-weight:bold;
-  opacity:.85;
+.secondary{
+  margin-top:24px;
+  display:grid;
+  grid-template-columns:repeat(5,130px);
+  gap:18px;
 }
 
-.secondary{
-  margin-top:26px;
-  display:grid;
-  grid-template-columns:repeat(6,1fr);
-  gap:18px;
+.app{
+  min-height:120px;
 }
 
 .bottom{
@@ -159,10 +140,10 @@ body{
   left:0;
   right:0;
   height:58px;
-  background:rgba(0,0,0,.75);
+  background:rgba(0,0,0,.70);
   display:flex;
   justify-content:center;
-  gap:28px;
+  gap:30px;
   align-items:center;
   font-size:28px;
 }
@@ -191,11 +172,6 @@ body{
   font-weight:bold;
   line-height:1.5;
 }
-
-@media(max-width:900px){
-  .secondary{grid-template-columns:repeat(4,1fr)}
-  .main-grid{grid-template-columns:130px 130px 1fr}
-}
 </style>
 </head>
 
@@ -212,8 +188,6 @@ body{
     <span onclick="mostrarCodigo()">🎧</span>
   </div>
 </div>
-
-<div id="logo" class="logo"></div>
 
 <div class="content" id="content">
   <div class="status">
@@ -280,8 +254,8 @@ function render(data){
   }
 
   const layout = data.layout || {};
-  const mainApps = Array.isArray(data.mainApps) ? data.mainApps.slice(0,2) : [];
-  const secondaryApps = Array.isArray(data.secondaryApps) ? data.secondaryApps : [];
+  const mainApps = Array.isArray(data.mainApps) ? data.mainApps.slice(0,3) : [];
+  const secondaryApps = Array.isArray(data.secondaryApps) ? data.secondaryApps.slice(0,5) : [];
 
   const bannerUrl =
     (Array.isArray(layout.banners) && layout.banners.length && (layout.banners[0].image || layout.banners[0].url || layout.banners[0])) ||
@@ -293,50 +267,37 @@ function render(data){
     document.getElementById('bg').style.backgroundImage = `url('${layout.background}')`;
   }
 
-  if(layout.logo){
-    document.getElementById('logo').innerHTML = `<img src="${layout.logo}" onerror="this.style.display='none'">`;
-  }
-
   const mainHtml = mainApps.map(app=>`
     <div class="main-app" onclick="openApp('${app.apk || app.url || ''}')">
-      <img src="${appIcon(app)}" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1829/1829586.png'">
+      <img src="${appIcon(app)}" onerror="this.style.display='none'">
       <div class="app-name">${safeText(app.name || 'APP')}</div>
     </div>
   `).join('');
-
-  const emptyMain = `
-    <div class="main-app">
-      <img src="https://cdn-icons-png.flaticon.com/512/1829/1829586.png">
-      <div class="app-name">Sem app</div>
-    </div>
-  `;
 
   const bannerHtml = `
     <div class="banner">
       ${
         bannerUrl
-        ? `<img src="${bannerUrl}" onerror="this.parentNode.innerHTML='<div class=&quot;no-banner&quot;>Banner/Fundo indisponível</div>'">`
-        : `<div class="no-banner">Nenhum banner configurado</div>`
+        ? `<img src="${bannerUrl}" onerror="this.style.display='none'">`
+        : ``
       }
     </div>
   `;
 
   const secondaryHtml = secondaryApps.map(app=>`
     <div class="app" onclick="openApp('${app.apk || app.url || ''}')">
-      <img src="${appIcon(app)}" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1829/1829586.png'">
+      <img src="${appIcon(app)}" onerror="this.style.display='none'">
       <div class="app-name">${safeText(app.name || 'APP')}</div>
     </div>
   `).join('');
 
   document.getElementById('content').innerHTML = `
     <div class="main-grid">
-      ${mainHtml || emptyMain + emptyMain}
+      ${mainHtml}
       ${bannerHtml}
     </div>
 
-    <div class="secondary">
-      ${secondaryHtml}
-    </div>
+    ${secondaryHtml ? `<div class="secondary">${secondaryHtml}</div>` : ''}
   `;
 }
 
