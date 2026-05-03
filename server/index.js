@@ -9,8 +9,8 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '200mb' }));
+app.use(express.urlencoded({ extended: true, limit: '200mb' }));
 
 app.use('/painel', express.static(path.join(__dirname, '..', 'painel')));
 app.use('/downloads', express.static(path.join(__dirname, 'public')));
@@ -24,20 +24,6 @@ if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-const storage = multer.diskStorage({
-  destination: (_, __, cb) => cb(null, uploadDir),
-  filename: (_, file, cb) => {
-    const ext = path.extname(file.originalname);
-    const name = Date.now() + '-' + Math.random().toString(36).substring(2, 8);
-    cb(null, name + ext);
-  }
-});
-
-const upload = multer({ storage });
-
-// =====================
-// HELPERS
-// =====================
 function uid() {
   return Date.now().toString(36) + Math.random().toString(36).substring(2, 8);
 }
@@ -45,6 +31,30 @@ function uid() {
 function fileUrl(req, filename) {
   return `${req.protocol}://${req.get('host')}/downloads/uploads/${filename}`;
 }
+
+function safeName(originalName) {
+  const ext = path.extname(originalName || '').toLowerCase();
+  const base = path.basename(originalName || 'arquivo', ext)
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-zA-Z0-9-_]/g, '-')
+    .replace(/-+/g, '-')
+    .substring(0, 45);
+
+  return `${Date.now()}-${uid()}-${base}${ext}`;
+}
+
+const storage = multer.diskStorage({
+  destination: (_, __, cb) => cb(null, uploadDir),
+  filename: (_, file, cb) => cb(null, safeName(file.originalname))
+});
+
+const upload = multer({
+  storage,
+  limits: {
+    fileSize: 300 * 1024 * 1024
+  }
+});
 
 function normalizeCode(code) {
   return String(code || '').trim().toUpperCase();
@@ -94,6 +104,13 @@ function criarFundosPadrao() {
 }
 
 // =====================
+// HOME
+// =====================
+app.get('/', (req, res) => {
+  res.redirect('/painel/index.html');
+});
+
+// =====================
 // LOGIN
 // =====================
 app.post('/login', (req, res) => {
@@ -107,6 +124,7 @@ app.post('/login', (req, res) => {
 
     res.status(401).json({ ok: false, message: 'Login inválido' });
   } catch (e) {
+    console.log(e);
     res.status(500).json({ ok: false, message: 'Erro no login' });
   }
 });
@@ -134,6 +152,8 @@ app.post('/apps', (req, res) => {
       version: req.body.version || '',
       apk: req.body.apk || '',
       icon: req.body.icon || '',
+      notes: req.body.notes || '',
+      mode: req.body.mode || 'auto',
       active: req.body.active !== false,
       autoInstall: req.body.autoInstall || false,
       createdAt: new Date().toISOString()
@@ -149,10 +169,41 @@ app.post('/apps', (req, res) => {
   }
 });
 
+app.put('/apps/:id', (req, res) => {
+  try {
+    const apps = db.getApps();
+    const index = apps.findIndex(appItem => String(appItem.id) === String(req.params.id));
+
+    if (index === -1) {
+      return res.status(404).json({ ok: false, message: 'Aplicativo não encontrado' });
+    }
+
+    apps[index] = {
+      ...apps[index],
+      name: req.body.name ?? apps[index].name,
+      package: req.body.package ?? apps[index].package,
+      version: req.body.version ?? apps[index].version,
+      apk: req.body.apk ?? apps[index].apk,
+      icon: req.body.icon ?? apps[index].icon,
+      notes: req.body.notes ?? apps[index].notes,
+      active: req.body.active ?? apps[index].active,
+      updatedAt: new Date().toISOString()
+    };
+
+    db.saveApps(apps);
+
+    res.json({ ok: true, app: apps[index] });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ ok: false, message: 'Erro ao editar aplicativo' });
+  }
+});
+
 app.delete('/apps/:id', (req, res) => {
   try {
     const apps = db.getApps();
-    const filtrados = apps.filter(appItem => appItem.id !== req.params.id);
+    const filtrados = apps.filter(appItem => String(appItem.id) !== String(req.params.id));
+
     db.saveApps(filtrados);
 
     res.json({ ok: true });
@@ -168,13 +219,46 @@ app.post('/upload/apk', upload.single('file'), (req, res) => {
       return res.status(400).json({ ok: false, message: 'Nenhum APK enviado' });
     }
 
+    const ext = path.extname(req.file.originalname || '').toLowerCase();
+
+    if (ext !== '.apk') {
+      try {
+        fs.unlinkSync(req.file.path);
+      } catch {}
+
+      return res.status(400).json({
+        ok: false,
+        message: 'Arquivo inválido. Envie somente arquivo .apk'
+      });
+    }
+
     res.json({
       ok: true,
-      url: fileUrl(req, req.file.filename)
+      url: fileUrl(req, req.file.filename),
+      filename: req.file.filename,
+      originalName: req.file.originalname,
+      size: req.file.size
     });
   } catch (e) {
     console.log(e);
     res.status(500).json({ ok: false, message: 'Erro ao enviar APK' });
+  }
+});
+
+app.post('/upload/icon', upload.single('imagem'), (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ ok: false, message: 'Nenhuma imagem enviada' });
+    }
+
+    res.json({
+      ok: true,
+      url: fileUrl(req, req.file.filename),
+      filename: req.file.filename
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ ok: false, message: 'Erro ao enviar ícone' });
   }
 });
 
@@ -228,6 +312,22 @@ app.get('/layouts', (req, res) => {
   }
 });
 
+app.get('/layouts/:id', (req, res) => {
+  try {
+    const layouts = db.getLayouts();
+    const layout = layouts.find(l => String(l.id) === String(req.params.id));
+
+    if (!layout) {
+      return res.status(404).json({ ok: false, message: 'Layout não encontrado' });
+    }
+
+    res.json({ ok: true, layout });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ ok: false, message: 'Erro ao carregar layout' });
+  }
+});
+
 app.post('/layouts', (req, res) => {
   try {
     const layouts = db.getLayouts();
@@ -264,6 +364,59 @@ app.post('/layouts', (req, res) => {
   } catch (e) {
     console.log(e);
     res.status(500).json({ ok: false, message: 'Erro ao salvar layout' });
+  }
+});
+
+app.put('/layouts/:id', (req, res) => {
+  try {
+    const layouts = db.getLayouts();
+    const index = layouts.findIndex(l => String(l.id) === String(req.params.id));
+
+    if (index === -1) {
+      return res.status(404).json({ ok: false, message: 'Layout não encontrado' });
+    }
+
+    layouts[index] = {
+      ...layouts[index],
+      name: req.body.name ?? layouts[index].name,
+      logo: req.body.logo ?? layouts[index].logo,
+      background: req.body.background ?? layouts[index].background,
+      backgroundId: req.body.backgroundId ?? layouts[index].backgroundId,
+      logoPosition: req.body.logoPosition ?? layouts[index].logoPosition,
+      buttonsLocked: req.body.buttonsLocked ?? layouts[index].buttonsLocked,
+      unlockPassword: req.body.unlockPassword ?? layouts[index].unlockPassword,
+      showAppsButton: req.body.showAppsButton ?? layouts[index].showAppsButton,
+      iconSize: req.body.iconSize ?? layouts[index].iconSize,
+      clockSize: req.body.clockSize ?? layouts[index].clockSize,
+      expireSize: req.body.expireSize ?? layouts[index].expireSize,
+      bannerPosition: req.body.bannerPosition ?? layouts[index].bannerPosition,
+      datePosition: req.body.datePosition ?? layouts[index].datePosition,
+      bannerInterval: req.body.bannerInterval ?? layouts[index].bannerInterval,
+      autoUpdate: req.body.autoUpdate ?? layouts[index].autoUpdate,
+      banners: req.body.banners ?? layouts[index].banners,
+      updatedAt: new Date().toISOString()
+    };
+
+    db.saveLayouts(layouts);
+
+    res.json({ ok: true, layout: layouts[index] });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ ok: false, message: 'Erro ao editar layout' });
+  }
+});
+
+app.delete('/layouts/:id', (req, res) => {
+  try {
+    const layouts = db.getLayouts();
+    const filtrados = layouts.filter(l => String(l.id) !== String(req.params.id));
+
+    db.saveLayouts(filtrados);
+
+    res.json({ ok: true });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ ok: false, message: 'Erro ao excluir layout' });
   }
 });
 
@@ -350,9 +503,9 @@ app.get('/launcher/device/:code', (req, res) => {
     const secondaryIds = layout && Array.isArray(layout.secondaryApps) ? layout.secondaryApps : [];
     const allIds = layout && Array.isArray(layout.apps) ? layout.apps : [...mainIds, ...secondaryIds];
 
-    const mainApps = apps.filter(appItem => mainIds.includes(appItem.id));
-    const secondaryApps = apps.filter(appItem => secondaryIds.includes(appItem.id));
-    const layoutApps = apps.filter(appItem => allIds.includes(appItem.id));
+    const mainApps = apps.filter(appItem => mainIds.includes(appItem.id) && appItem.active !== false);
+    const secondaryApps = apps.filter(appItem => secondaryIds.includes(appItem.id) && appItem.active !== false);
+    const layoutApps = apps.filter(appItem => allIds.includes(appItem.id) && appItem.active !== false);
 
     res.json({
       ok: true,
@@ -378,7 +531,7 @@ app.get('/launcher/device/:code', (req, res) => {
 app.post('/devices/:id/complete-activation', (req, res) => {
   try {
     const devices = getDevicesSafe();
-    const index = devices.findIndex(d => d.id === req.params.id);
+    const index = devices.findIndex(d => String(d.id) === String(req.params.id));
 
     if (index === -1) {
       return res.status(404).json({ ok: false, message: 'Dispositivo não encontrado' });
@@ -424,10 +577,34 @@ app.post('/devices/:id/complete-activation', (req, res) => {
   }
 });
 
+app.put('/devices/:id', (req, res) => {
+  try {
+    const devices = getDevicesSafe();
+    const index = devices.findIndex(d => String(d.id) === String(req.params.id));
+
+    if (index === -1) {
+      return res.status(404).json({ ok: false, message: 'Dispositivo não encontrado' });
+    }
+
+    devices[index] = {
+      ...devices[index],
+      ...req.body,
+      updatedAt: new Date().toISOString()
+    };
+
+    saveDevicesSafe(devices);
+
+    res.json({ ok: true, device: devices[index] });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ ok: false, message: 'Erro ao editar dispositivo' });
+  }
+});
+
 app.delete('/devices/:id', (req, res) => {
   try {
     const devices = getDevicesSafe();
-    const filtrados = devices.filter(device => device.id !== req.params.id);
+    const filtrados = devices.filter(device => String(device.id) !== String(req.params.id));
 
     saveDevicesSafe(filtrados);
     res.json({ ok: true });
@@ -438,9 +615,35 @@ app.delete('/devices/:id', (req, res) => {
 });
 
 // =====================
+// ERROS DE UPLOAD
+// =====================
+app.use((err, req, res, next) => {
+  console.log('ERRO GLOBAL:', err);
+
+  if (err instanceof multer.MulterError) {
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      return res.status(413).json({
+        ok: false,
+        message: 'Arquivo muito grande. Limite atual: 300MB.'
+      });
+    }
+
+    return res.status(400).json({
+      ok: false,
+      message: 'Erro no upload: ' + err.message
+    });
+  }
+
+  res.status(500).json({
+    ok: false,
+    message: err.message || 'Erro interno do servidor'
+  });
+});
+
+// =====================
 // START
 // =====================
 app.listen(PORT, () => {
   criarFundosPadrao();
-  console.log('Servidor rodando:', PORT);
+  console.log('Servidor rodando na porta:', PORT);
 });
