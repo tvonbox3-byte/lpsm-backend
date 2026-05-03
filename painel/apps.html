@@ -1,402 +1,21 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LAUNCHER BOX - Meus Aplicativos</title>
-
-  <style>
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: linear-gradient(90deg, #02101e 0%, #052444 100%);
-      color: #fff;
-      padding-bottom: 80px;
-    }
-
-    .topbar {
-      height: 58px;
-      background: #0d2347;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      border-bottom: 1px solid rgba(255,255,255,.05);
-    }
-
-    .menu-btn, .bell-btn {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      border: none;
-      background: transparent;
-      color: #fff;
-      cursor: pointer;
-    }
-
-    .menu-btn { left: 18px; font-size: 34px; }
-    .bell-btn { right: 18px; font-size: 26px; }
-
-    .brand {
-      font-size: 22px;
-      font-weight: 800;
-      letter-spacing: 1px;
-    }
-
-    .header {
-      padding: 22px 20px 10px;
-    }
-
-    .header h1 {
-      margin: 0 0 8px;
-      font-size: 32px;
-      font-weight: 800;
-    }
-
-    .header p {
-      margin: 0;
-      font-size: 16px;
-    }
-
-    .credits-card {
-      margin: 18px 20px;
-      background: #0d2347;
-      border-radius: 10px;
-      padding: 18px;
-    }
-
-    .credits-title {
-      text-align: center;
-      font-weight: 800;
-      margin-bottom: 16px;
-    }
-
-    .credits-grid {
-      display: grid;
-      grid-template-columns: 1fr 1.4fr 1fr;
-      gap: 18px;
-      align-items: start;
-    }
-
-    .credits-mid {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .pill {
-      display: flex;
-      align-items: center;
-      background: #000;
-      border-radius: 999px;
-      overflow: hidden;
-      min-height: 42px;
-    }
-
-    .pill-icon {
-      width: 44px;
-      height: 44px;
-      min-width: 44px;
-      background: #2f7cff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-    }
-
-    .pill-text {
-      flex: 1;
-      padding: 0 14px;
-      font-weight: 800;
-      white-space: nowrap;
-    }
-
-    .pill-value {
-      background: #38d463;
-      padding: 0 16px;
-      height: 44px;
-      min-width: 48px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 900;
-    }
-
-    .actions {
-      margin: 20px;
-    }
-
-    .big-btn {
-      width: 100%;
-      height: 56px;
-      border: none;
-      border-radius: 6px;
-      background: #2f7cff;
-      color: #fff;
-      font-size: 21px;
-      font-weight: 800;
-      margin-bottom: 14px;
-      cursor: pointer;
-    }
-
-    .small-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 90px;
-      margin: 20px;
-    }
-
-    .small-btn {
-      width: 90px;
-      height: 44px;
-      justify-self: center;
-      border: none;
-      border-radius: 8px;
-      background: #7f8aa4;
-      color: #fff;
-      font-weight: 800;
-      cursor: pointer;
-    }
-
-    .warning {
-      margin: 0 20px 24px;
-      background: #ff9800;
-      border-radius: 8px;
-      padding: 14px 16px;
-      line-height: 1.7;
-    }
-
-    .warning strong {
-      display: block;
-      margin-bottom: 4px;
-    }
-
-    .section-title {
-      margin: 0 20px 14px;
-      font-weight: 900;
-    }
-
-    .list {
-      margin-bottom: 20px;
-    }
-
-    .app-row {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      background: rgba(13,35,71,.95);
-      border-top: 1px solid rgba(255,255,255,.05);
-      border-bottom: 1px solid rgba(255,255,255,.05);
-      padding: 16px 20px;
-    }
-
-    .app-icon {
-      width: 68px;
-      height: 68px;
-      border-radius: 8px;
-      object-fit: cover;
-      background: #173154;
-      flex-shrink: 0;
-    }
-
-    .app-name {
-      flex: 1;
-      font-size: 16px;
-      font-weight: 700;
-    }
-
-    .expand {
-      border: none;
-      background: transparent;
-      color: #7f8aa4;
-      font-size: 28px;
-      cursor: pointer;
-    }
-
-    .details {
-      display: none;
-      background: rgba(13,35,71,.95);
-      padding: 0 20px 18px 102px;
-      color: #dce7fb;
-      font-size: 14px;
-      line-height: 1.8;
-      word-break: break-word;
-    }
-
-    .details.show {
-      display: block;
-    }
-
-    .details button {
-      border: none;
-      border-radius: 6px;
-      padding: 10px 14px;
-      color: #fff;
-      font-weight: 800;
-      cursor: pointer;
-      margin-top: 10px;
-      margin-right: 8px;
-    }
-
-    .delete-btn { background: #f44336; }
-    .edit-btn { background: #2f7cff; }
-
-    .empty {
-      margin: 0 20px;
-      padding: 18px;
-      background: rgba(13,35,71,.95);
-      border-radius: 8px;
-      color: #dce7fb;
-    }
-
-    .bottom-nav {
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      height: 60px;
-      background: #0d2347;
-      display: flex;
-      align-items: center;
-      justify-content: space-around;
-      border-top: 1px solid rgba(255,255,255,.06);
-      z-index: 60;
-    }
-
-    .bottom-nav a {
-      color: #fff;
-      text-decoration: none;
-      font-size: 30px;
-    }
-
-    @media (max-width: 900px) {
-      .credits-grid { grid-template-columns: 1fr; }
-      .small-row { gap: 20px; }
-    }
-  </style>
-</head>
-
-<body>
-
-  <div class="topbar">
-    <button class="menu-btn">☰</button>
-    <div class="brand">LAUNCHER BOX</div>
-    <button class="bell-btn">🔔</button>
-  </div>
-
-  <div class="header">
-    <h1>Meus Aplicativos</h1>
-    <p>Aqui você poderá adicionar/excluir seus aplicativos.</p>
-  </div>
-
-  <div class="credits-card">
-    <div class="credits-title">SEUS CRÉDITOS</div>
-
-    <div class="credits-grid">
-      <div class="pill">
-        <div class="pill-icon">›</div>
-        <div class="pill-text">ANUAL:</div>
-        <div class="pill-value">1000</div>
-      </div>
-
-      <div class="credits-mid">
-        <div class="pill">
-          <div class="pill-icon">🗓</div>
-          <div class="pill-text">Validade dos créditos:</div>
-          <div class="pill-value">15/11/2026 - 19:50</div>
-        </div>
-
-        <div class="pill">
-          <div class="pill-icon">🧩</div>
-          <div class="pill-text">Limite de layouts:</div>
-          <div class="pill-value">20</div>
-        </div>
-
-        <div class="pill">
-          <div class="pill-icon">💼</div>
-          <div class="pill-text">Limite de aplicativos:</div>
-          <div class="pill-value">1000</div>
-        </div>
-      </div>
-
-      <div class="pill">
-        <div class="pill-icon">›</div>
-        <div class="pill-text">2 ANOS:</div>
-        <div class="pill-value">0</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="actions">
-    <button class="big-btn" onclick="window.location.href='addapk.html'">ADD APK AUTOMÁTICO</button>
-    <button class="big-btn" onclick="window.location.href='addapk.html'">ADD APK MANUAL</button>
-    <button class="big-btn" onclick="alert('Depois ajustamos pacotes')">ADD PACOTE</button>
-  </div>
-
-  <div class="small-row">
-    <button class="small-btn" onclick="loadApps()">EXIBIR</button>
-    <button class="small-btn" onclick="searchApp()">BUSCAR</button>
-  </div>
-
-  <div class="warning">
-    <strong>ATENÇÃO</strong>
-    Após adicionar algum aplicativo, NÃO ESQUEÇA de ir em gerenciar launcher &gt; meus layouts na opção de escolher aplicativos/links e adicionar o aplicativo ao layout que você deseja!<br>
-    O fato de você ter anexado um aplicativo aqui, não significa que ele vai estar no layout da launcher, para isso adicione ele ao LAYOUT!
-  </div>
-
-  <div class="section-title">MEUS APLICATIVOS:</div>
-
-  <div id="appsList" class="list">
-    <div class="empty">Carregando aplicativos...</div>
-  </div>
-
-  <nav class="bottom-nav">
-    <a href="dashboard.html">⌂</a>
-    <a href="https://wa.me/" target="_blank">◔</a>
-    <a href="devices.html">▭</a>
-    <a href="launcher.html">▦</a>
-    <a href="#">↑</a>
-  </nav>
-
 <script>
 const API = window.location.origin;
 let appsCache = [];
+let openedId = null;
 
 function fallbackIcon(name) {
-  const n = String(name || '').toLowerCase();
-
-  if (n.includes('youtube')) {
-    return 'https://upload.wikimedia.org/wikipedia/commons/e/ef/Youtube_logo.png';
-  }
-
-  if (n.includes('bluetooth')) {
-    return 'https://upload.wikimedia.org/wikipedia/commons/2/2a/Bluetooth_logo.svg';
-  }
-
   return 'https://cdn-icons-png.flaticon.com/512/565/565547.png';
-}
-
-function safe(value, fallback = '-') {
-  return value === undefined || value === null || value === '' ? fallback : value;
 }
 
 function normalizeApkUrl(url) {
   if (!url) return '';
-
-  return String(url).replace(
-    'http://localhost:3000',
-    window.location.origin
-  );
+  return url.replace('http://localhost:3000', window.location.origin);
 }
 
 function renderApps(list) {
   const el = document.getElementById('appsList');
 
-  if (!Array.isArray(list) || list.length === 0) {
+  if (!list.length) {
     el.innerHTML = '<div class="empty">Nenhum aplicativo cadastrado.</div>';
     return;
   }
@@ -404,113 +23,50 @@ function renderApps(list) {
   el.innerHTML = '';
 
   list.forEach(app => {
+    const isOpen = openedId === app.id;
+
     const apkUrl = normalizeApkUrl(app.apk);
 
-    const row = document.createElement('div');
-    row.className = 'app-row';
+    el.innerHTML += `
+      <div class="app-row" onclick="toggle('${app.id}')">
+        <img class="app-icon" src="${app.icon || fallbackIcon(app.name)}">
+        <div class="app-name">${app.name}</div>
+        <button class="expand">${isOpen ? '⌃' : '⌄'}</button>
+      </div>
 
-    const icon = document.createElement('img');
-    icon.className = 'app-icon';
-    icon.src = app.icon || fallbackIcon(app.name);
-    icon.onerror = () => {
-      icon.src = fallbackIcon(app.name);
-    };
-
-    const name = document.createElement('div');
-    name.className = 'app-name';
-    name.textContent = `- ${safe(app.name, 'APP SEM NOME')}`;
-
-    const expand = document.createElement('button');
-    expand.className = 'expand';
-    expand.innerHTML = '⌄';
-
-    row.appendChild(icon);
-    row.appendChild(name);
-    row.appendChild(expand);
-
-    const details = document.createElement('div');
-    details.className = 'details';
-    details.innerHTML = `
-      Nome: ${safe(app.name)}<br>
-      Pacote: ${safe(app.package)}<br>
-      APK: ${safe(apkUrl)}<br>
-      Status: ${app.active === false ? 'Inativo' : 'Ativo'}<br>
-      Criado em: ${safe(app.createdAt)}
-      <br>
-      <button class="edit-btn" onclick="alert('Depois ajustamos edição')">EDITAR</button>
-      <button class="delete-btn" onclick="deleteApp('${app.id}')">EXCLUIR</button>
+      <div class="details ${isOpen ? 'show' : ''}">
+        Nome: ${app.name}<br>
+        Pacote: ${app.package || '-'}<br>
+        APK: ${apkUrl || '-'}<br>
+        <button class="delete-btn" onclick="deleteApp('${app.id}')">EXCLUIR</button>
+      </div>
     `;
-
-    expand.onclick = () => {
-      details.classList.toggle('show');
-    };
-
-    el.appendChild(row);
-    el.appendChild(details);
   });
 }
 
-async function loadApps() {
-  const el = document.getElementById('appsList');
-  el.innerHTML = '<div class="empty">Carregando aplicativos...</div>';
+function toggle(id){
+  openedId = openedId === id ? null : id;
+  renderApps(appsCache);
+}
 
+async function loadApps() {
   try {
-    const res = await fetch(API + '/apps', { cache: 'no-store' });
+    const res = await fetch(API + '/apps');
     const data = await res.json();
 
-    if (!res.ok || !Array.isArray(data)) {
-      throw new Error('Resposta inválida da API');
-    }
-
-    appsCache = data;
+    appsCache = Array.isArray(data) ? data : [];
     renderApps(appsCache);
 
-  } catch (err) {
-    console.error(err);
-    el.innerHTML = '<div class="empty">Erro ao carregar aplicativos.</div>';
+  } catch {
+    document.getElementById('appsList').innerHTML =
+      '<div class="empty">Erro ao carregar aplicativos.</div>';
   }
 }
 
-function searchApp() {
-  const termo = prompt('Digite o nome do aplicativo:');
-
-  if (!termo) {
-    renderApps(appsCache);
-    return;
-  }
-
-  const busca = termo.toLowerCase();
-
-  const filtrados = appsCache.filter(app =>
-    String(app.name || '').toLowerCase().includes(busca)
-  );
-
-  renderApps(filtrados);
-}
-
-async function deleteApp(id) {
-  if (!confirm('Deseja excluir este aplicativo?')) return;
-
-  try {
-    const res = await fetch(API + '/apps/' + id, {
-      method: 'DELETE'
-    });
-
-    if (!res.ok) {
-      alert('Erro ao excluir aplicativo');
-      return;
-    }
-
-    loadApps();
-
-  } catch (err) {
-    console.error(err);
-    alert('Erro ao excluir aplicativo');
-  }
+async function deleteApp(id){
+  await fetch(API + '/apps/' + id, { method:'DELETE' });
+  loadApps();
 }
 
 document.addEventListener('DOMContentLoaded', loadApps);
 </script>
-
-</body>
-</html>
