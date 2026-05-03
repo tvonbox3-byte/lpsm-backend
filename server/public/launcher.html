@@ -3,15 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LPSM Launcher</title>
+<title>Launcher</title>
 
 <style>
 *{box-sizing:border-box}
 
 body{
   margin:0;
-  font-family:Arial, Helvetica, sans-serif;
-  background:#eeeeee;
+  font-family:Arial;
+  background:#eee;
   color:#fff;
   overflow:hidden;
 }
@@ -19,102 +19,71 @@ body{
 .bg{
   position:fixed;
   inset:0;
-  background:#eeeeee;
+  background:#eee;
   background-size:cover;
   background-position:center;
-  z-index:-2;
-}
-
-.overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.04);
   z-index:-1;
 }
 
 .top{
-  height:105px;
   display:flex;
   justify-content:space-between;
-  align-items:flex-start;
-  padding:36px 70px 0;
+  padding:35px 70px 0;
+  align-items:center;
 }
 
 .date{
   color:#00d6c8;
   font-size:24px;
   font-weight:bold;
-  white-space:nowrap;
 }
 
 .icons{
   display:flex;
-  align-items:center;
-  gap:20px;
-}
-
-.icons span{
-  cursor:pointer;
-  color:#00d6c8;
+  gap:18px;
   font-size:36px;
-  line-height:1;
 }
 
 .content{
-  padding:95px 75px 75px;
+  padding:120px 70px 70px;
 }
 
-.main-grid{
-  display:grid;
-  grid-template-columns:repeat(3,150px) 1fr;
+.main-area{
+  display:flex;
   gap:22px;
   align-items:stretch;
 }
 
-.main-app,
-.app{
-  background:rgba(0,0,0,.42);
-  border-radius:13px;
-  text-align:center;
-  padding:14px 8px;
+.main-apps{
+  display:flex;
+  gap:22px;
+}
+
+.main-app{
+  width:150px;
+  height:230px;
+  background:rgba(0,0,0,.45);
+  border-radius:14px;
   display:flex;
   flex-direction:column;
   align-items:center;
   justify-content:center;
-}
-
-.main-app{
-  min-height:230px;
+  text-align:center;
 }
 
 .main-app img{
-  width:82px;
-  height:82px;
+  width:80px;
+  height:80px;
   object-fit:contain;
-  margin-bottom:8px;
-}
-
-.app img{
-  width:58px;
-  height:58px;
-  object-fit:contain;
-  margin-bottom:6px;
-}
-
-.app-name{
-  font-size:15px;
-  color:#fff;
-  word-break:break-word;
+  margin-bottom:12px;
 }
 
 .banner{
-  background:rgba(255,255,255,.28);
-  border-radius:13px;
-  overflow:hidden;
+  flex:1;
   min-height:230px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  background:rgba(255,255,255,.28);
+  border-radius:14px;
+  overflow:hidden;
 }
 
 .banner img{
@@ -124,14 +93,28 @@ body{
 }
 
 .secondary{
-  margin-top:24px;
-  display:grid;
-  grid-template-columns:repeat(5,130px);
+  margin-top:25px;
+  display:flex;
   gap:18px;
 }
 
 .app{
-  min-height:120px;
+  width:130px;
+  height:120px;
+  background:rgba(0,0,0,.45);
+  border-radius:12px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+}
+
+.app img{
+  width:58px;
+  height:58px;
+  object-fit:contain;
+  margin-bottom:8px;
 }
 
 .bottom{
@@ -143,7 +126,7 @@ body{
   background:rgba(0,0,0,.70);
   display:flex;
   justify-content:center;
-  gap:30px;
+  gap:35px;
   align-items:center;
   font-size:28px;
 }
@@ -154,12 +137,10 @@ body{
   display:flex;
   align-items:center;
   justify-content:center;
-  padding:40px;
 }
 
 .status-box{
   width:70%;
-  max-width:980px;
   min-height:230px;
   background:#45515A;
   border-radius:8px;
@@ -170,7 +151,6 @@ body{
   padding:30px;
   font-size:19px;
   font-weight:bold;
-  line-height:1.5;
 }
 </style>
 </head>
@@ -178,20 +158,19 @@ body{
 <body>
 
 <div id="bg" class="bg"></div>
-<div class="overlay"></div>
 
 <div class="top">
   <div id="date" class="date"></div>
   <div class="icons">
-    <span onclick="alert('Configurações')">⚙</span>
-    <span onclick="alert('Wi-Fi')">📶</span>
-    <span onclick="mostrarCodigo()">🎧</span>
+    <span>⚙</span>
+    <span>📶</span>
+    <span onclick="alert('Código: ' + DEVICE_CODE)">🎧</span>
   </div>
 </div>
 
 <div class="content" id="content">
   <div class="status">
-    <div class="status-box">Carregando launcher...</div>
+    <div class="status-box">Carregando...</div>
   </div>
 </div>
 
@@ -209,92 +188,59 @@ const DEVICE_CODE = params.get('code') || '';
 function atualizarData(){
   const d = new Date();
   const data = d.toLocaleDateString('pt-BR');
-  const hora = d.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+  const hora = d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
   document.getElementById('date').textContent = data + ' ' + hora;
 }
 
-setInterval(atualizarData, 30000);
 atualizarData();
+setInterval(atualizarData,30000);
 
-function mostrarCodigo(){
-  alert('Código do aparelho: ' + DEVICE_CODE);
-}
-
-function appIcon(app){
+function icon(app){
   return app.icon || 'https://cdn-icons-png.flaticon.com/512/1829/1829586.png';
 }
 
-function safeText(text){
-  return String(text || '').replace(/[<>&"]/g, '');
-}
-
-function openApp(url){
-  if(url){
-    window.location.href = url;
-  }
-}
-
-function renderStatus(msg){
-  document.getElementById('content').innerHTML = `
-    <div class="status">
-      <div class="status-box">${msg}</div>
-    </div>
-  `;
+function abrir(url){
+  if(url) window.location.href = url;
 }
 
 function render(data){
   if(!data || !data.layout){
-    renderStatus('Dispositivo não registrado. Entre no suporte para registrar.<br><br>Código: ' + DEVICE_CODE);
+    document.getElementById('content').innerHTML =
+      '<div class="status"><div class="status-box">Dispositivo não registrado. Entre no suporte para registrar.</div></div>';
     return;
   }
 
-  if(!data.active && !data.activated){
-    renderStatus('Dispositivo aguardando ativação.<br><br>Código: ' + DEVICE_CODE);
-    return;
-  }
-
-  const layout = data.layout || {};
-  const mainApps = Array.isArray(data.mainApps) ? data.mainApps.slice(0,3) : [];
-  const secondaryApps = Array.isArray(data.secondaryApps) ? data.secondaryApps.slice(0,5) : [];
-
-  const bannerUrl =
-    (Array.isArray(layout.banners) && layout.banners.length && (layout.banners[0].image || layout.banners[0].url || layout.banners[0])) ||
-    layout.banner ||
-    layout.background ||
-    '';
+  const layout = data.layout;
 
   if(layout.background){
     document.getElementById('bg').style.backgroundImage = `url('${layout.background}')`;
   }
 
-  const mainHtml = mainApps.map(app=>`
-    <div class="main-app" onclick="openApp('${app.apk || app.url || ''}')">
-      <img src="${appIcon(app)}" onerror="this.style.display='none'">
-      <div class="app-name">${safeText(app.name || 'APP')}</div>
+  const mainApps = Array.isArray(data.mainApps) ? data.mainApps.slice(0,3) : [];
+  const secondaryApps = Array.isArray(data.secondaryApps) ? data.secondaryApps.slice(0,5) : [];
+
+  const banner = layout.banner || layout.background || '';
+
+  const mainHtml = mainApps.map(app => `
+    <div class="main-app" onclick="abrir('${app.apk || ''}')">
+      <img src="${icon(app)}">
+      <div>${app.name || 'APP'}</div>
     </div>
   `).join('');
 
-  const bannerHtml = `
-    <div class="banner">
-      ${
-        bannerUrl
-        ? `<img src="${bannerUrl}" onerror="this.style.display='none'">`
-        : ``
-      }
-    </div>
-  `;
-
-  const secondaryHtml = secondaryApps.map(app=>`
-    <div class="app" onclick="openApp('${app.apk || app.url || ''}')">
-      <img src="${appIcon(app)}" onerror="this.style.display='none'">
-      <div class="app-name">${safeText(app.name || 'APP')}</div>
+  const secondaryHtml = secondaryApps.map(app => `
+    <div class="app" onclick="abrir('${app.apk || ''}')">
+      <img src="${icon(app)}">
+      <div>${app.name || 'APP'}</div>
     </div>
   `).join('');
 
   document.getElementById('content').innerHTML = `
-    <div class="main-grid">
-      ${mainHtml}
-      ${bannerHtml}
+    <div class="main-area">
+      ${mainHtml ? `<div class="main-apps">${mainHtml}</div>` : ''}
+      <div class="banner">
+        ${banner ? `<img src="${banner}">` : ''}
+      </div>
     </div>
 
     ${secondaryHtml ? `<div class="secondary">${secondaryHtml}</div>` : ''}
@@ -302,18 +248,9 @@ function render(data){
 }
 
 async function load(){
-  if(!DEVICE_CODE){
-    renderStatus('Código do aparelho não encontrado.');
-    return;
-  }
-
-  try{
-    const res = await fetch(API + '/launcher/device/' + DEVICE_CODE, {cache:'no-store'});
-    const data = await res.json();
-    render(data);
-  }catch(e){
-    renderStatus('Erro ao conectar no servidor.<br><br>Código: ' + DEVICE_CODE);
-  }
+  const res = await fetch(API + '/launcher/device/' + DEVICE_CODE,{cache:'no-store'});
+  const data = await res.json();
+  render(data);
 }
 
 load();
