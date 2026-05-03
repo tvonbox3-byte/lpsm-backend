@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LAUNCHER BOX - Adicionar aplicativo</title>
+<title>Adicionar aplicativo</title>
 
 <style>
 *{box-sizing:border-box}
@@ -32,7 +32,7 @@ body{
 .back{
   position:absolute;
   left:18px;
-  font-size:40px;
+  font-size:42px;
   cursor:pointer;
 }
 
@@ -80,77 +80,50 @@ body{
   display:block;
 }
 
-.card{
-  background:#0d1f35;
-  margin:18px;
-  padding:18px;
-  border-radius:8px;
+.info{
+  text-align:center;
+  padding:28px 18px;
+  border-bottom:1px solid rgba(255,255,255,.05);
 }
 
-.center{
-  text-align:center;
-  line-height:1.8;
+.info h3{
+  margin:0 0 18px;
   font-size:18px;
+}
+
+.info p{
+  margin:0;
+  color:#a8b8ca;
+  font-size:17px;
 }
 
 .warning{
   margin:18px;
   background:#ff9800;
   padding:16px 18px;
-  border-radius:8px;
+  border-radius:6px;
   line-height:1.7;
+}
+
+.warning strong{
+  display:block;
+  margin-bottom:8px;
 }
 
 .tip{
   margin:18px;
   background:#5b2bd6;
   padding:16px 18px;
-  border-radius:8px;
+  border-radius:6px;
   line-height:1.7;
 }
 
-.mode-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:18px;
-  margin:18px;
-}
-
-.mode-card{
-  background:#0d1f35;
-  border-radius:10px;
-  padding:30px 18px;
-  text-align:center;
-  cursor:pointer;
-  border:2px solid transparent;
-}
-
-.mode-card:hover{
-  border-color:#287df3;
-}
-
-.mode-icon{
-  font-size:55px;
-  margin-bottom:14px;
-}
-
-.mode-title{
-  font-size:22px;
-  font-weight:bold;
-  margin-bottom:10px;
-}
-
-.mode-text{
-  color:#b7c6da;
-  line-height:1.6;
-}
-
 .upload-box{
-  margin:18px;
-  min-height:240px;
+  margin:28px 18px 18px;
+  min-height:245px;
   border:1px solid rgba(255,255,255,.08);
   background:#0d1f35;
-  border-radius:8px;
+  border-radius:6px;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -160,23 +133,70 @@ body{
 }
 
 .upload-icon{
-  font-size:62px;
+  font-size:60px;
   color:#6f88a8;
+  margin-bottom:12px;
 }
 
 .upload-title{
-  color:#b7c6da;
-  font-size:18px;
+  color:#8fa2ba;
+  font-size:17px;
 }
 
 .selected-file{
-  margin-top:12px;
+  margin-top:14px;
   color:#fff;
   word-break:break-word;
-  line-height:1.6;
+  line-height:1.7;
 }
 
 input[type=file]{
+  display:none;
+}
+
+.progress-area{
+  margin:18px;
+  display:none;
+}
+
+.progress-text{
+  text-align:center;
+  color:#b7c6da;
+  margin-bottom:12px;
+  font-size:18px;
+}
+
+.progress-bg{
+  width:100%;
+  height:34px;
+  border-radius:8px;
+  background:#e7edf5;
+  overflow:hidden;
+}
+
+.progress-bar{
+  height:100%;
+  width:0%;
+  background:#287df3;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+}
+
+.file-info{
+  margin:18px;
+  color:#a8b8ca;
+  line-height:1.8;
+}
+
+.loading-box{
+  margin:18px;
+  padding:16px;
+  background:#e8f6ff;
+  color:#71859a;
+  border-radius:6px;
   display:none;
 }
 
@@ -222,44 +242,21 @@ textarea{
   resize:vertical;
 }
 
+.icon-preview{
+  width:60px;
+  height:60px;
+  border-radius:8px;
+  object-fit:cover;
+  background:#172b43;
+  margin-top:10px;
+  display:none;
+}
+
 .help{
   color:#9fb1cb;
   margin-top:7px;
   line-height:1.6;
   font-size:14px;
-}
-
-.preview-icon{
-  width:70px;
-  height:70px;
-  border-radius:10px;
-  object-fit:cover;
-  background:#172b43;
-  margin-top:10px;
-}
-
-.progress-wrap{
-  margin:18px;
-  display:none;
-}
-
-.progress-bg{
-  width:100%;
-  height:34px;
-  border-radius:8px;
-  background:#e7edf5;
-  overflow:hidden;
-}
-
-.progress-bar{
-  height:100%;
-  width:0%;
-  background:#287df3;
-  color:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:bold;
 }
 
 .status{
@@ -335,12 +332,6 @@ textarea{
   text-decoration:none;
   font-size:30px;
 }
-
-@media(max-width:800px){
-  .mode-grid{
-    grid-template-columns:1fr;
-  }
-}
 </style>
 </head>
 
@@ -354,7 +345,7 @@ textarea{
 <div class="steps">
   <div class="step active" id="head1">
     <div class="circle">1</div>
-    Tipo
+    Arquivo APK
   </div>
   <div class="step" id="head2">
     <div class="circle">2</div>
@@ -369,85 +360,68 @@ textarea{
 <div id="statusBox" class="status"></div>
 
 <section id="step1" class="section show">
-  <div class="card center">
-    Escolha como deseja adicionar o aplicativo.
+
+  <div class="info">
+    <h3>Adicione um arquivo no formato APK.</h3>
+    <p>Você poderá baixar o arquivo do aplicativo em qualquer site da internet, e adiciona-lo.</p>
   </div>
 
-  <div class="mode-grid">
-    <div class="mode-card" onclick="selectMode('auto')">
-      <div class="mode-icon">⚡</div>
-      <div class="mode-title">ADD APK AUTOMÁTICO</div>
-      <div class="mode-text">
-        Escolha o APK e o sistema preenche o nome pelo arquivo.<br>
-        Não precisa informar pacote.
-      </div>
-    </div>
-
-    <div class="mode-card" onclick="selectMode('manual')">
-      <div class="mode-icon">✍️</div>
-      <div class="mode-title">ADD APK MANUAL</div>
-      <div class="mode-text">
-        Cadastre nome, pacote, versão, link ou arquivo APK manualmente.
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="step2" class="section">
-
-  <div class="warning" id="autoWarning">
+  <div class="warning">
     <strong>ATENÇÃO</strong>
-    No modo automático você só escolhe o APK. O nome será preenchido pelo arquivo.
-    Se quiser, você pode trocar o nome e adicionar um ícone manualmente.
-  </div>
-
-  <div class="tip" id="manualWarning">
-    <strong>MODO MANUAL</strong>
-    Use este modo quando quiser informar pacote, versão, link direto do APK ou dados completos.
+    Ao adicionar um novo arquivo, aguarde o envio terminar. O sistema vai salvar o APK para aparecer na launcher.
   </div>
 
   <label class="upload-box" for="apkFile">
     <div>
       <div class="upload-icon">☁</div>
-      <div class="upload-title">Clique para escolher o APK</div>
+      <div class="upload-title">Clique para escolher o apk</div>
       <div class="selected-file" id="selectedFileText"></div>
     </div>
   </label>
 
   <input id="apkFile" type="file" accept=".apk,application/vnd.android.package-archive">
 
+  <div class="progress-area" id="progressArea">
+    <div class="progress-text" id="progressText">Enviando: 0%</div>
+    <div class="progress-bg">
+      <div class="progress-bar" id="progressBar">0%</div>
+    </div>
+  </div>
+
+  <div class="file-info" id="fileInfo"></div>
+
+  <div class="loading-box" id="loadingBox">⏳ Fazendo upload do arquivo</div>
+
+  <button class="btn" onclick="uploadApkAndNext()">Prosseguir >>></button>
+</section>
+
+<section id="step2" class="section">
+
+  <div class="tip">
+    <strong>DICA</strong>
+    O nome foi preenchido pelo arquivo APK. Você pode editar o nome e escolher outro ícone se quiser.
+  </div>
+
   <div class="form">
 
     <div class="field">
       <label>Nome do aplicativo</label>
-      <input id="appName" placeholder="Ex: IBO PLAYER">
-    </div>
-
-    <div class="field" id="packageField">
-      <label>Pacote do aplicativo</label>
-      <input id="appPackage" placeholder="Ex: com.exemplo.app">
-      <div class="help">O pacote só é obrigatório no modo manual.</div>
+      <input id="appName" placeholder="Nome do aplicativo">
     </div>
 
     <div class="field">
       <label>Versão</label>
-      <input id="appVersion" placeholder="Ex: 1.0">
-    </div>
-
-    <div class="field" id="apkUrlField">
-      <label>URL manual do APK</label>
-      <input id="appApkUrl" placeholder="https://site.com/app.apk">
-      <div class="help">Use apenas se não quiser enviar arquivo APK.</div>
+      <input id="appVersion" placeholder="Opcional">
     </div>
 
     <div class="field">
       <label>Ícone do aplicativo</label>
-      <input id="appIcon" placeholder="URL do ícone ou envie imagem abaixo">
-      <div class="help">Opcional. Se não enviar, aparece ícone padrão.</div>
-      <img id="iconPreview" class="preview-icon" style="display:none">
+      <input id="appIcon" placeholder="URL do ícone opcional">
+      <div class="help">Se quiser trocar o ícone, envie uma imagem abaixo.</div>
+      <img id="iconPreview" class="icon-preview">
     </div>
 
-    <label class="upload-box" for="iconFile" style="min-height:120px">
+    <label class="upload-box" for="iconFile" style="min-height:120px;margin:10px 0 18px">
       <div>
         <div class="upload-icon" style="font-size:38px">🖼️</div>
         <div class="upload-title">Clique para escolher imagem do ícone</div>
@@ -458,16 +432,18 @@ textarea{
     <input id="iconFile" type="file" accept="image/*">
 
     <div class="field">
+      <label>Deseja usar este ícone?</label>
+      <select id="useIcon">
+        <option value="sim">SIM</option>
+        <option value="manual">Adicionar manual</option>
+      </select>
+    </div>
+
+    <div class="field">
       <label>Observações</label>
       <textarea id="appNotes" placeholder="Opcional"></textarea>
     </div>
 
-  </div>
-
-  <div class="progress-wrap" id="progressWrap">
-    <div class="progress-bg">
-      <div class="progress-bar" id="progressBar">0%</div>
-    </div>
   </div>
 
   <button class="btn" onclick="goStep3()">Prosseguir >>></button>
@@ -493,7 +469,6 @@ textarea{
 const API = window.location.origin;
 
 let currentStep = 1;
-let mode = '';
 let selectedApkFile = null;
 let selectedIconFile = null;
 let uploadedApkUrl = '';
@@ -537,19 +512,6 @@ function setStep(step){
   window.scrollTo({top:0, behavior:'smooth'});
 }
 
-function selectMode(type){
-  mode = type;
-
-  document.getElementById('autoWarning').style.display = mode === 'auto' ? 'block' : 'none';
-  document.getElementById('manualWarning').style.display = mode === 'manual' ? 'block' : 'none';
-
-  document.getElementById('packageField').style.display = mode === 'manual' ? 'block' : 'none';
-  document.getElementById('apkUrlField').style.display = mode === 'manual' ? 'block' : 'none';
-
-  hideStatus();
-  setStep(2);
-}
-
 function normalizeNameFromFile(fileName){
   return String(fileName || '')
     .replace(/\.apk$/i,'')
@@ -559,7 +521,14 @@ function normalizeNameFromFile(fileName){
     .toUpperCase() || 'APP SEM NOME';
 }
 
+function formatSize(bytes){
+  if(!bytes) return '0 MB';
+  return (bytes / 1024 / 1024).toFixed(2) + ' MB';
+}
+
 document.getElementById('apkFile').addEventListener('change', function(){
+  hideStatus();
+
   const file = this.files && this.files[0];
   if(!file) return;
 
@@ -567,11 +536,12 @@ document.getElementById('apkFile').addEventListener('change', function(){
   uploadedApkUrl = '';
 
   document.getElementById('selectedFileText').innerHTML =
-    '<strong>Arquivo selecionado:</strong><br>' + file.name + '<br>Tamanho: ' + formatSize(file.size);
+    '<strong>Arquivo selecionado:</strong><br>' + file.name;
 
-  if(!document.getElementById('appName').value.trim()){
-    document.getElementById('appName').value = normalizeNameFromFile(file.name);
-  }
+  document.getElementById('fileInfo').innerHTML =
+    'Arquivo: ' + file.name + '<br>Tamanho: ' + formatSize(file.size);
+
+  document.getElementById('appName').value = normalizeNameFromFile(file.name);
 });
 
 document.getElementById('iconFile').addEventListener('change', function(){
@@ -590,68 +560,6 @@ document.getElementById('iconFile').addEventListener('change', function(){
   img.style.display = 'block';
 });
 
-function formatSize(bytes){
-  if(!bytes) return '0 MB';
-  return (bytes / 1024 / 1024).toFixed(2) + ' MB';
-}
-
-function goStep3(){
-  hideStatus();
-
-  const name = document.getElementById('appName').value.trim();
-  const pkg = document.getElementById('appPackage').value.trim();
-  const manualUrl = document.getElementById('appApkUrl').value.trim();
-
-  if(!mode){
-    showStatus('Escolha automático ou manual.');
-    setStep(1);
-    return;
-  }
-
-  if(!name){
-    showStatus('Informe o nome do aplicativo.');
-    return;
-  }
-
-  if(mode === 'auto' && !selectedApkFile){
-    showStatus('No automático, escolha um arquivo APK.');
-    return;
-  }
-
-  if(mode === 'manual'){
-    if(!pkg){
-      showStatus('No manual, informe o pacote do aplicativo.');
-      return;
-    }
-
-    if(!selectedApkFile && !manualUrl){
-      showStatus('No manual, envie um APK ou informe uma URL do APK.');
-      return;
-    }
-  }
-
-  buildSummary();
-  setStep(3);
-}
-
-function buildSummary(){
-  const name = document.getElementById('appName').value.trim();
-  const pkg = document.getElementById('appPackage').value.trim();
-  const version = document.getElementById('appVersion').value.trim();
-  const manualUrl = document.getElementById('appApkUrl').value.trim();
-  const icon = document.getElementById('appIcon').value.trim();
-
-  document.getElementById('summaryBox').innerHTML = `
-    <strong>Resumo do aplicativo</strong><br><br>
-    Modo: ${mode === 'auto' ? 'Automático' : 'Manual'}<br>
-    Nome: ${name || '-'}<br>
-    Pacote: ${mode === 'manual' ? (pkg || '-') : 'Não necessário no automático'}<br>
-    Versão: ${version || '-'}<br>
-    APK: ${selectedApkFile ? selectedApkFile.name : manualUrl || '-'}<br>
-    Ícone: ${selectedIconFile ? selectedIconFile.name : icon || 'Padrão'}
-  `;
-}
-
 function uploadWithProgress(url, file, fieldName){
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
@@ -659,30 +567,39 @@ function uploadWithProgress(url, file, fieldName){
 
     form.append(fieldName, file);
 
+    document.getElementById('progressArea').style.display = 'block';
+    document.getElementById('loadingBox').style.display = 'block';
+
     xhr.upload.onprogress = function(e){
       if(e.lengthComputable){
         const pct = Math.round((e.loaded / e.total) * 100);
-        document.getElementById('progressWrap').style.display = 'block';
+        document.getElementById('progressText').textContent = 'Enviando: ' + pct + '%';
         document.getElementById('progressBar').style.width = pct + '%';
         document.getElementById('progressBar').textContent = pct + '%';
       }
     };
 
     xhr.onload = function(){
+      document.getElementById('loadingBox').style.display = 'none';
+
+      let data = {};
       try{
-        const data = JSON.parse(xhr.responseText || '{}');
-        if(xhr.status >= 200 && xhr.status < 300){
-          resolve(data);
-        }else{
-          reject(new Error(data.message || 'Erro no upload'));
-        }
+        data = JSON.parse(xhr.responseText || '{}');
       }catch(e){
-        reject(new Error('Erro ao processar resposta do upload'));
+        reject(new Error('Erro ao processar resposta do upload. Verifique o server/index.js.'));
+        return;
+      }
+
+      if(xhr.status >= 200 && xhr.status < 300){
+        resolve(data);
+      }else{
+        reject(new Error(data.message || 'Erro no upload do APK.'));
       }
     };
 
     xhr.onerror = function(){
-      reject(new Error('Erro de conexão no upload'));
+      document.getElementById('loadingBox').style.display = 'none';
+      reject(new Error('Erro de conexão no upload.'));
     };
 
     xhr.open('POST', API + url);
@@ -690,42 +607,79 @@ function uploadWithProgress(url, file, fieldName){
   });
 }
 
-async function uploadApkIfNeeded(){
-  if(uploadedApkUrl) return uploadedApkUrl;
-
-  const manualUrl = document.getElementById('appApkUrl').value.trim();
-
-  if(manualUrl){
-    uploadedApkUrl = manualUrl;
-    return uploadedApkUrl;
-  }
+async function uploadApkAndNext(){
+  hideStatus();
 
   if(!selectedApkFile){
-    throw new Error('Nenhum APK selecionado.');
+    showStatus('Escolha um arquivo APK antes de prosseguir.');
+    return;
   }
 
-  const data = await uploadWithProgress('/upload/apk', selectedApkFile, 'file');
+  try{
+    const data = await uploadWithProgress('/upload/apk', selectedApkFile, 'file');
 
-  if(!data.ok || !data.url){
-    throw new Error(data.message || 'Erro ao enviar APK.');
+    if(!data.ok || !data.url){
+      throw new Error(data.message || 'Erro ao enviar APK.');
+    }
+
+    uploadedApkUrl = data.url;
+
+    showStatus('APK enviado com sucesso!', 'success');
+
+    setTimeout(() => {
+      setStep(2);
+      hideStatus();
+    }, 500);
+
+  }catch(e){
+    console.error(e);
+    showStatus(e.message || 'Erro ao subir o APK.');
+  }
+}
+
+function goStep3(){
+  hideStatus();
+
+  const name = document.getElementById('appName').value.trim();
+
+  if(!name){
+    showStatus('Informe o nome do aplicativo.');
+    return;
   }
 
-  uploadedApkUrl = data.url;
-  return uploadedApkUrl;
+  if(!uploadedApkUrl){
+    showStatus('O APK ainda não foi enviado. Volte e envie o APK.');
+    setStep(1);
+    return;
+  }
+
+  buildSummary();
+  setStep(3);
+}
+
+function buildSummary(){
+  document.getElementById('summaryBox').innerHTML = `
+    <strong>Resumo do aplicativo</strong><br><br>
+    Nome: ${document.getElementById('appName').value || '-'}<br>
+    Versão: ${document.getElementById('appVersion').value || '-'}<br>
+    APK: ${uploadedApkUrl || '-'}<br>
+    Ícone: ${selectedIconFile ? selectedIconFile.name : document.getElementById('appIcon').value || 'Padrão'}
+  `;
 }
 
 async function uploadIconIfNeeded(){
   if(uploadedIconUrl) return uploadedIconUrl;
 
+  const useIcon = document.getElementById('useIcon').value;
   const iconUrl = document.getElementById('appIcon').value.trim();
 
-  if(iconUrl){
+  if(useIcon === 'manual' && iconUrl){
     uploadedIconUrl = iconUrl;
     return uploadedIconUrl;
   }
 
   if(!selectedIconFile){
-    return '';
+    return iconUrl || '';
   }
 
   const form = new FormData();
@@ -744,25 +698,28 @@ async function uploadIconIfNeeded(){
     return uploadedIconUrl;
   }
 
-  return '';
+  return iconUrl || '';
 }
 
 async function saveApp(){
   hideStatus();
 
   try{
-    const apkUrl = await uploadApkIfNeeded();
+    if(!uploadedApkUrl){
+      throw new Error('APK não enviado.');
+    }
+
     const iconUrl = await uploadIconIfNeeded();
 
     const body = {
       name: document.getElementById('appName').value.trim() || 'APP SEM NOME',
-      package: mode === 'manual' ? document.getElementById('appPackage').value.trim() : '',
+      package: '',
       version: document.getElementById('appVersion').value.trim(),
       icon: iconUrl,
-      apk: apkUrl,
+      apk: uploadedApkUrl,
       notes: document.getElementById('appNotes').value.trim(),
       active: true,
-      mode: mode
+      mode: 'auto'
     };
 
     const res = await fetch(API + '/apps', {
