@@ -10,75 +10,112 @@
   <div id="drawerOverlay" class="drawer-overlay"></div>
 
   <aside id="drawer" class="drawer">
-    <div class="drawer-head">
-      <div class="drawer-avatar" id="drawerAvatar">L</div>
-      <div class="drawer-user">
-        <strong id="drawerUserName">Launcher Box</strong>
-        <span id="drawerUserEmail">Painel administrativo</span>
+    <div class="drawer-profile">
+      <div class="drawer-profile-avatar">
+        <img
+          id="drawerProfileImage"
+          src="https://via.placeholder.com/56x56.png?text=IMG"
+          alt="Imagem"
+          onerror="this.style.display='none'; document.getElementById('drawerProfileFallback').style.display='flex';"
+        >
+        <div id="drawerProfileFallback" class="drawer-profile-fallback" style="display:none;">LP</div>
       </div>
-      <div id="drawerClose" class="drawer-close">×</div>
+
+      <div class="drawer-profile-info">
+        <div class="drawer-profile-name" id="drawerUserName">lpzovendas vacaria rs</div>
+        <div class="drawer-profile-phone" id="drawerUserPhone">📱 54997146384</div>
+      </div>
+
+      <button id="drawerClose" class="drawer-profile-close" aria-label="Fechar menu">×</button>
     </div>
 
-    <div class="drawer-section-title">MENU</div>
+    <div class="drawer-menu">
+      <a class="drawer-menu-row" href="launcher.html">
+        <div class="drawer-menu-left">
+          <div class="drawer-menu-icon">🧩</div>
+          <span>Gerenciar launcher</span>
+        </div>
+        <span class="drawer-menu-arrow">›</span>
+      </a>
 
-    <a class="drawer-item" href="dashboard.html">
-      <div class="drawer-item-left">
-        <span>🏠</span>
-        <span>Início</span>
+      <a class="drawer-menu-row" href="devices.html">
+        <div class="drawer-menu-left">
+          <div class="drawer-menu-icon">📁</div>
+          <span>Gerenciar clientes</span>
+        </div>
+        <span class="drawer-menu-arrow">›</span>
+      </a>
+
+      <a class="drawer-menu-row" href="resellers.html">
+        <div class="drawer-menu-left">
+          <div class="drawer-menu-icon">👥</div>
+          <span>Gerenciar revendas</span>
+        </div>
+        <span class="drawer-menu-arrow">›</span>
+      </a>
+
+      <a class="drawer-menu-row" href="notifications.html">
+        <div class="drawer-menu-left">
+          <div class="drawer-menu-icon">🔔</div>
+          <span>Notificações</span>
+        </div>
+        <span class="drawer-menu-arrow">›</span>
+      </a>
+
+      <div class="drawer-menu-row drawer-theme-row">
+        <div class="drawer-menu-left">
+          <div class="drawer-menu-icon">🌙</div>
+          <span>Tema escuro</span>
+        </div>
+
+        <label class="drawer-switch">
+          <input type="checkbox" id="themeToggle" checked>
+          <span class="drawer-switch-slider"></span>
+        </label>
       </div>
-      <span>›</span>
-    </a>
 
-    <a class="drawer-item" href="launcher.html">
-      <div class="drawer-item-left">
-        <span>🧩</span>
-        <span>Gerenciar launcher</span>
-      </div>
-      <span>›</span>
-    </a>
+      <div class="drawer-section-label">Logs</div>
 
-    <a class="drawer-item" href="devices.html">
-      <div class="drawer-item-left">
-        <span>📁</span>
-        <span>Gerenciar dispositivos/clientes</span>
-      </div>
-      <span>›</span>
-    </a>
+      <a class="drawer-menu-row" href="logs.html">
+        <div class="drawer-menu-left">
+          <div class="drawer-menu-icon drawer-menu-icon-gray">📚</div>
+          <span>Logs gerais</span>
+        </div>
+        <span class="drawer-menu-arrow">›</span>
+      </a>
 
-    <a class="drawer-item" href="resellers.html">
-      <div class="drawer-item-left">
-        <span>👥</span>
-        <span>Gerenciar Revendas</span>
-      </div>
-      <span>›</span>
-    </a>
+      <a class="drawer-menu-row" href="creditos-recebidos.html">
+        <div class="drawer-menu-left">
+          <div class="drawer-menu-icon drawer-menu-icon-gray">🛰</div>
+          <span>Créditos recebidos</span>
+        </div>
+        <span class="drawer-menu-arrow">›</span>
+      </a>
 
-    <a class="drawer-item" href="notifications.html">
-      <div class="drawer-item-left">
-        <span>🔔</span>
-        <span>Notificações</span>
-      </div>
-      <span>›</span>
-    </a>
+      <a class="drawer-menu-row" href="recargas-feitas.html">
+        <div class="drawer-menu-left">
+          <div class="drawer-menu-icon drawer-menu-icon-gray">🛰</div>
+          <span>Recargas feitas</span>
+        </div>
+        <span class="drawer-menu-arrow">›</span>
+      </a>
 
-    <a class="drawer-item" href="logs.html">
-      <div class="drawer-item-left">
-        <span>📚</span>
-        <span>LOGs</span>
-      </div>
-      <span>›</span>
-    </a>
+      <div class="drawer-section-label">Configurações</div>
 
-    <a class="drawer-item" href="settings.html">
-      <div class="drawer-item-left">
-        <span>⚙️</span>
-        <span>Configurações</span>
-      </div>
-      <span>›</span>
-    </a>
+      <a class="drawer-menu-row" href="settings.html">
+        <div class="drawer-menu-left">
+          <div class="drawer-menu-icon drawer-menu-icon-dark">⚙</div>
+          <span>Configurações</span>
+        </div>
+        <span class="drawer-menu-arrow">›</span>
+      </a>
+    </div>
 
-    <div class="drawer-bottom">
-      <div class="db-item" onclick="logout()">⎋</div>
+    <div class="drawer-bottom-bar">
+      <a class="drawer-bottom-btn" href="perfil.html" aria-label="Perfil">◌</a>
+      <a class="drawer-bottom-btn" href="dashboard.html" aria-label="Camadas">◈</a>
+      <a class="drawer-bottom-btn" href="settings.html" aria-label="Configurações">⚙</a>
+      <button class="drawer-bottom-btn" onclick="logout()" aria-label="Sair">⇥</button>
     </div>
   </aside>
 
@@ -226,7 +263,7 @@
       <div class="theme-card-title">TEMA ESCURO</div>
 
       <label class="theme-switch">
-        <input type="checkbox" id="themeToggle" checked>
+        <input type="checkbox" id="themeToggleBottom" checked>
         <span class="theme-slider"></span>
       </label>
     </section>

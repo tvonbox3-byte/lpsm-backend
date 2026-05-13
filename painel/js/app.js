@@ -98,22 +98,23 @@ function bindDrawer() {
 
 function setDrawerUser() {
   const user = JSON.parse(localStorage.getItem('painel_user') || '{}');
+
   const drawerUserName = document.getElementById('drawerUserName');
-  const drawerUserEmail = document.getElementById('drawerUserEmail');
-  const drawerAvatar = document.getElementById('drawerAvatar');
+  const drawerUserPhone = document.getElementById('drawerUserPhone');
+  const drawerProfileFallback = document.getElementById('drawerProfileFallback');
 
   const companyName =
     (user.companyName || '').trim() ||
     localStorage.getItem('painel_company_name') ||
-    'LAUNCHER BOX';
+    'lpzovendas vacaria rs';
 
-  const email =
-    (user.email || '').trim() ||
-    'Painel administrativo';
+  const phone =
+    (user.phone || '').trim() ||
+    '54997146384';
 
-  if (drawerUserName) drawerUserName.textContent = companyName;
-  if (drawerUserEmail) drawerUserEmail.textContent = email;
-  if (drawerAvatar) drawerAvatar.textContent = (companyName[0] || 'L').toUpperCase();
+  if (drawerUserName) drawerUserName.textContent = companyName.toLowerCase();
+  if (drawerUserPhone) drawerUserPhone.textContent = `📱 ${phone}`;
+  if (drawerProfileFallback) drawerProfileFallback.textContent = (companyName.slice(0, 2) || 'LP').toUpperCase();
 }
 
 function formatCreditsValidity(value) {
@@ -156,24 +157,37 @@ function getAppsLimit(dashboard) {
   return Number(settings.appLimit ?? settings.appsLimit ?? settings.maxApps ?? dashboard.totalApps ?? 0);
 }
 
+function applyThemeState(isDark) {
+  document.body.classList.toggle('light-mode', !isDark);
+
+  const topToggle = document.getElementById('themeToggle');
+  const bottomToggle = document.getElementById('themeToggleBottom');
+
+  if (topToggle) topToggle.checked = isDark;
+  if (bottomToggle) bottomToggle.checked = isDark;
+
+  localStorage.setItem('painel_dark_mode', isDark ? '1' : '0');
+}
+
 function bindThemeToggle() {
-  const themeToggle = document.getElementById('themeToggle');
-  if (!themeToggle) return;
+  const topToggle = document.getElementById('themeToggle');
+  const bottomToggle = document.getElementById('themeToggleBottom');
 
   const saved = localStorage.getItem('painel_dark_mode');
-  if (saved === null) {
-    themeToggle.checked = true;
-    document.body.classList.remove('light-mode');
-  } else {
-    themeToggle.checked = saved === '1';
-    document.body.classList.toggle('light-mode', saved !== '1');
+  const isDark = saved === null ? true : saved === '1';
+  applyThemeState(isDark);
+
+  if (topToggle) {
+    topToggle.addEventListener('change', () => {
+      applyThemeState(topToggle.checked);
+    });
   }
 
-  themeToggle.addEventListener('change', () => {
-    const dark = themeToggle.checked;
-    localStorage.setItem('painel_dark_mode', dark ? '1' : '0');
-    document.body.classList.toggle('light-mode', !dark);
-  });
+  if (bottomToggle) {
+    bottomToggle.addEventListener('change', () => {
+      applyThemeState(bottomToggle.checked);
+    });
+  }
 }
 
 function bindDownloadLauncher() {
@@ -215,7 +229,7 @@ async function loadDashboardHome() {
     const companyName =
       (settings.companyName || '').trim() ||
       (localUser.companyName || '').trim() ||
-      'LAUNCHER BOX';
+      'lpzovendas vacaria rs';
 
     localStorage.setItem('painel_company_name', companyName);
 
@@ -233,7 +247,7 @@ async function loadDashboardHome() {
 
     const fallbackName =
       (localUser.companyName || '').trim() ||
-      'LAUNCHER BOX';
+      'lpzovendas vacaria rs';
 
     welcomeTitle.textContent = `Bem vindo(a) ${fallbackName.toLowerCase()}`;
 
@@ -250,8 +264,8 @@ async function loadDashboardHome() {
 document.addEventListener('DOMContentLoaded', async () => {
   authGuard();
   bindDrawer();
-  setDrawerUser();
   bindThemeToggle();
   bindDownloadLauncher();
+  setDrawerUser();
   await loadDashboardHome();
 });
