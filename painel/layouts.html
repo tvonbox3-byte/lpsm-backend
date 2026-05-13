@@ -8,101 +8,63 @@
 
 <style>
 body{
-  background:#061426;
-  color:#fff;
   margin:0;
   font-family:Arial, Helvetica, sans-serif;
+  background:#061426;
+  color:#fff;
   padding-bottom:70px;
 }
 
 .layouts-page{
-  padding-bottom:80px;
+  min-height:100vh;
+  background:#061426;
+  padding-bottom:85px;
 }
 
-.layouts-hero{
-  padding:10px 18px 26px;
-}
-
-.layouts-hero h1{
-  margin:0 0 14px;
-  font-size:38px;
-  font-weight:800;
-}
-
-.layouts-hero p{
-  margin:0;
-  font-size:18px;
-  color:#fff;
-}
-
-.layouts-credit-box{
-  margin:4px 18px 52px;
+.topbar{
+  height:70px;
   background:#0b1f3a;
-  border-radius:6px;
-  padding:0 18px 20px;
 }
 
-.layouts-credit-title{
-  text-align:center;
-  font-size:14px;
-  font-weight:700;
-  padding:0 0 12px;
-}
-
-.layouts-credit-grid{
-  display:grid;
-  grid-template-columns:1fr 1.4fr 1fr;
-  gap:18px;
-  align-items:start;
-}
-
-.layouts-credit-side{
-  display:flex;
-  justify-content:center;
-  padding-top:18px;
-}
-
-.layouts-credit-center{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:8px;
+.layouts-toolbar-space{
+  height:15px;
 }
 
 .blue-action{
   width:100%;
-  height:52px;
+  height:56px;
   border:none;
-  border-radius:5px;
+  border-radius:4px;
   background:#287df3;
   color:#fff;
   font-size:22px;
   cursor:pointer;
-  margin-bottom:28px;
+  margin:0 0 28px;
 }
 
 .layouts-actions{
   display:grid;
   grid-template-columns:1fr 1fr;
-  padding:16px 0 18px;
+  padding:20px 0 20px;
   align-items:center;
 }
 
 .small-gray-btn{
-  width:86px;
-  height:44px;
+  width:96px;
+  height:48px;
   border:none;
   border-radius:6px;
-  background:#7c8da6;
+  background:#8493aa;
   color:#fff;
   font-weight:700;
+  font-size:15px;
   cursor:pointer;
   justify-self:center;
 }
 
 .layouts-label{
-  padding:0 18px 18px;
-  font-size:14px;
+  padding:0 20px 18px;
+  font-size:15px;
   font-weight:700;
 }
 
@@ -111,77 +73,141 @@ body{
 }
 
 .layout-row{
-  min-height:63px;
+  min-height:64px;
   display:flex;
   align-items:center;
-  gap:18px;
-  padding:0 18px;
+  gap:20px;
+  padding:0 24px;
   background:#0b1f3a;
   border-bottom:1px solid rgba(255,255,255,.08);
   cursor:pointer;
 }
 
 .layout-thumb{
-  width:26px;
-  height:26px;
+  width:28px;
+  height:28px;
   object-fit:cover;
-  opacity:.9;
+  opacity:.95;
 }
 
 .layout-name{
   flex:1;
-  font-size:18px;
+  font-size:19px;
+  color:#fff;
 }
 
 .layout-arrow{
-  color:#415574;
+  color:#445b7a;
   font-size:30px;
+  line-height:1;
 }
 
-.layout-menu{
+.layout-panel{
   display:none;
-  background:#07182f;
+  background:#0b1f3a;
   border-bottom:1px solid rgba(255,255,255,.08);
-  padding:12px 18px 18px;
 }
 
-.layout-menu.show{
+.layout-panel.show{
   display:block;
 }
 
-.menu-grid{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:10px;
+.layout-options{
+  padding:28px 0 12px;
 }
 
-.menu-item{
-  min-height:42px;
-  border-radius:6px;
-  background:#102748;
+.option-row{
+  min-height:64px;
+  display:flex;
+  align-items:center;
+  padding:0 18px 0 76px;
+  gap:22px;
+  color:#fff;
+  cursor:pointer;
+  position:relative;
+}
+
+.option-row:hover{
+  background:rgba(255,255,255,.03);
+}
+
+.option-icon{
+  position:absolute;
+  left:76px;
+  width:42px;
+  height:42px;
+  border-radius:50%;
   display:flex;
   align-items:center;
   justify-content:center;
+  font-size:21px;
   color:#fff;
-  font-size:14px;
-  cursor:pointer;
-  border:none;
 }
 
-.menu-item.green{
-  background:#22a957;
+.option-title{
+  margin-left:56px;
+  flex:1;
+  font-size:18px;
 }
 
-.menu-item.red{
-  background:#c93b3b;
+.option-current{
+  color:#667b99;
+  font-size:15px;
+  margin-right:12px;
 }
 
-.empty-box{
-  margin:18px;
-  padding:20px;
-  background:#0b1f3a;
-  border-radius:8px;
-  color:#dce7fb;
+.option-arrow{
+  color:#445b7a;
+  font-size:30px;
+  line-height:1;
+}
+
+.ico-gray{background:#7d8ca2;}
+.ico-blue{background:#287df3;}
+.ico-green{background:#32c75a;}
+.ico-black{background:#000;}
+.ico-purple{background:#6c35d8;}
+.ico-orange{background:#ff9700;}
+.ico-red{background:#ef4338;}
+.ico-white{background:#fff;color:#000;}
+
+.data-title{
+  padding:28px 20px 18px;
+  color:#a8b9cf;
+  font-size:16px;
+  text-transform:uppercase;
+}
+
+.data-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:22px 28px;
+  padding:0 24px 28px;
+}
+
+.data-card{
+  background:#0e233f;
+  border:1px solid rgba(255,255,255,.06);
+  min-height:88px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+}
+
+.data-card.full{
+  grid-column:1 / -1;
+}
+
+.data-card h3{
+  margin:0 0 18px;
+  font-size:19px;
+  font-weight:800;
+}
+
+.data-card div{
+  font-size:13px;
+  color:#fff;
 }
 
 .status{
@@ -196,17 +222,29 @@ body{
   display:block;
 }
 
-@media(max-width:900px){
-  .layouts-credit-grid{
+.empty-box{
+  margin:18px;
+  padding:20px;
+  background:#0b1f3a;
+  border-radius:8px;
+  color:#dce7fb;
+}
+
+@media(max-width:800px){
+  .data-grid{
     grid-template-columns:1fr;
   }
 
-  .menu-grid{
-    grid-template-columns:1fr 1fr;
+  .option-row{
+    padding-left:20px;
   }
 
-  .layouts-hero h1{
-    font-size:32px;
+  .option-icon{
+    left:20px;
+  }
+
+  .option-title{
+    font-size:16px;
   }
 }
 </style>
@@ -285,56 +323,15 @@ body{
 
 <main class="layouts-page">
 
-  <section class="layouts-hero">
-    <h1>Meus Layouts</h1>
-    <p>Aqui você poderá gerenciar seus layouts existentes e/ou criar novos.</p>
-  </section>
+  <div class="layouts-toolbar-space"></div>
 
-  <section class="layouts-credit-box">
-    <div class="layouts-credit-title">SEUS CRÉDITOS</div>
+  <button class="blue-action" onclick="window.location.href='addlayout.html'">
+    ADD LAYOUT
+  </button>
 
-    <div class="layouts-credit-grid">
-      <div class="layouts-credit-side">
-        <div class="mini-pill">
-          <span class="mini-pill-icon">›</span>
-          <span class="mini-pill-text">ANUAL:</span>
-          <span class="mini-pill-value">1</span>
-        </div>
-      </div>
-
-      <div class="layouts-credit-center">
-        <div class="long-pill">
-          <span class="long-pill-icon">▦</span>
-          <span class="long-pill-label">Validade dos créditos:</span>
-          <span class="long-pill-value">15/11/2026 - 19:50</span>
-        </div>
-
-        <div class="long-pill">
-          <span class="long-pill-icon">▦</span>
-          <span class="long-pill-label">Limite de layouts:</span>
-          <span class="long-pill-value" id="layoutLimitValue">0</span>
-        </div>
-
-        <div class="long-pill">
-          <span class="long-pill-icon">▴</span>
-          <span class="long-pill-label">Limite de aplicativos:</span>
-          <span class="long-pill-value">2</span>
-        </div>
-      </div>
-
-      <div class="layouts-credit-side">
-        <div class="mini-pill">
-          <span class="mini-pill-icon">›</span>
-          <span class="mini-pill-text">2 ANOS:</span>
-          <span class="mini-pill-value">0</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <button class="blue-action" onclick="window.location.href='addlayout.html'">ADD LAYOUT</button>
-
-  <button class="blue-action" onclick="alert('Função copiar layout será ajustada depois.')">COPIAR LAYOUT</button>
+  <button class="blue-action" onclick="copiarLayout()">
+    COPIAR LAYOUT
+  </button>
 
   <div class="layouts-actions">
     <button class="small-gray-btn" onclick="loadLayouts()">EXIBIR</button>
@@ -391,10 +388,6 @@ function hideStatus(){
   box.classList.remove('show');
 }
 
-function imgUrl(layout){
-  return layout.logo || layout.background || 'https://cdn-icons-png.flaticon.com/512/1829/1829586.png';
-}
-
 function safeText(value){
   return String(value || '').replace(/[<>&"]/g, function(c){
     return {
@@ -406,11 +399,51 @@ function safeText(value){
   });
 }
 
+function imgUrl(layout){
+  return layout.logo || layout.background || 'https://cdn-icons-png.flaticon.com/512/1829/1829586.png';
+}
+
+function boolText(value){
+  if(value === true || value === 'sim' || value === 'SIM' || value === 'true') return 'SIM';
+  return 'NÃO';
+}
+
+function posText(value){
+  if(value === 'center') return 'Centralizado';
+  if(value === 'right') return 'Direita';
+  if(value === 'left') return 'Esquerda';
+  return value || '-';
+}
+
+function sizeText(value){
+  if(value === 'small') return 'Pequeno';
+  if(value === 'large') return 'Grande';
+  if(value === 'default') return 'Médio';
+  return value || '-';
+}
+
+function formatDate(value){
+  if(!value) return '-';
+
+  try{
+    const d = new Date(value);
+    if(isNaN(d.getTime())) return value;
+
+    const dia = String(d.getDate()).padStart(2,'0');
+    const mes = String(d.getMonth() + 1).padStart(2,'0');
+    const ano = d.getFullYear();
+    const hora = String(d.getHours()).padStart(2,'0');
+    const min = String(d.getMinutes()).padStart(2,'0');
+    const seg = String(d.getSeconds()).padStart(2,'0');
+
+    return `${dia}/${mes}/${ano} - ${hora}:${min}:${seg}`;
+  }catch(e){
+    return value;
+  }
+}
+
 function renderLayouts(){
   const container = document.getElementById('layoutsContainer');
-  const limit = document.getElementById('layoutLimitValue');
-
-  limit.innerText = Math.max(0, 20 - allLayouts.length);
 
   if(!allLayouts.length){
     container.innerHTML = '<div class="empty-box">Nenhum layout encontrado.</div>';
@@ -429,21 +462,164 @@ function renderLayouts(){
         <div class="layout-arrow">${isOpen ? '⌃' : '⌄'}</div>
       </div>
 
-      <div class="layout-menu ${isOpen ? 'show' : ''}">
-        <div class="menu-grid">
-          <button class="menu-item" onclick="event.stopPropagation(); editarLayout('${layout.id}')">Editar</button>
-          <button class="menu-item" onclick="event.stopPropagation(); escolherApps('${layout.id}')">Apps</button>
-          <button class="menu-item green" onclick="event.stopPropagation(); visualizarLayout('${layout.id}')">Ver</button>
-          <button class="menu-item red" onclick="event.stopPropagation(); excluirLayout('${layout.id}')">Excluir</button>
-        </div>
-
-        <div style="margin-top:14px;color:#b8c7dd;font-size:14px;">
-          Apps principais: ${layout.mainApps?.length || 0} |
-          Apps secundários: ${layout.secondaryApps?.length || 0}
-        </div>
+      <div class="layout-panel ${isOpen ? 'show' : ''}">
+        ${renderLayoutPanel(layout)}
       </div>
     `;
   });
+}
+
+function renderLayoutPanel(layout){
+  return `
+    <div class="layout-options">
+
+      <div class="option-row" onclick="event.stopPropagation(); editarLayout('${layout.id}')">
+        <div class="option-icon ico-gray">◎</div>
+        <div class="option-title">Editar Layout</div>
+        <div class="option-arrow">›</div>
+      </div>
+
+      <div class="option-row" onclick="event.stopPropagation(); escolherTema('${layout.id}')">
+        <div class="option-icon ico-blue">✽</div>
+        <div class="option-title">Escolher Tema</div>
+        <div class="option-arrow">›</div>
+      </div>
+
+      <div class="option-row" onclick="event.stopPropagation(); escolherApps('${layout.id}')">
+        <div class="option-icon ico-green">☁</div>
+        <div class="option-title">Escolher aplicativos/links/gavetas</div>
+        <div class="option-arrow">›</div>
+      </div>
+
+      <div class="option-row" onclick="event.stopPropagation(); escolherBanners('${layout.id}')">
+        <div class="option-icon ico-black">▭</div>
+        <div class="option-title">Escolher banners</div>
+        <div class="option-arrow">›</div>
+      </div>
+
+      <div class="option-row" onclick="event.stopPropagation(); alterarNome('${layout.id}')">
+        <div class="option-icon ico-purple">↗</div>
+        <div class="option-title">Alterar nome do layout</div>
+        <div class="option-arrow">›</div>
+      </div>
+
+      <div class="option-row" onclick="event.stopPropagation(); appAutoStart('${layout.id}')">
+        <div class="option-icon ico-orange">▷</div>
+        <div class="option-title">App auto start</div>
+        <div class="option-current">Atual: Desativado</div>
+        <div class="option-arrow">›</div>
+      </div>
+
+      <div class="option-row" onclick="event.stopPropagation(); appForceUpdate('${layout.id}')">
+        <div class="option-icon ico-red">⇧</div>
+        <div class="option-title">App force update</div>
+        <div class="option-current">Atual: Desativado</div>
+        <div class="option-arrow">›</div>
+      </div>
+
+      <div class="option-row" onclick="event.stopPropagation(); packFundos('${layout.id}')">
+        <div class="option-icon ico-black">▧</div>
+        <div class="option-title">Pack de planos de fundo</div>
+        <div class="option-current">Atual: Desativado</div>
+        <div class="option-arrow">›</div>
+      </div>
+
+      <div class="option-row" onclick="event.stopPropagation(); alterarIcone('${layout.id}')">
+        <div class="option-icon ico-gray">▣</div>
+        <div class="option-title">Alterar ícone do layout</div>
+        <div class="option-arrow">›</div>
+      </div>
+
+      <div class="option-row" onclick="event.stopPropagation(); editarIcones('${layout.id}')">
+        <div class="option-icon ico-blue">◎</div>
+        <div class="option-title">Editar ícones exibidos</div>
+        <div class="option-arrow">›</div>
+      </div>
+
+      <div class="option-row" onclick="event.stopPropagation(); verClientes('${layout.id}')">
+        <div class="option-icon ico-white">☻</div>
+        <div class="option-title">Ver clientes que usam</div>
+        <div class="option-arrow">›</div>
+      </div>
+
+      <div class="option-row" onclick="event.stopPropagation(); moverClientes('${layout.id}')">
+        <div class="option-icon ico-red">♙</div>
+        <div class="option-title">Mover clientes para outro layout</div>
+        <div class="option-arrow">›</div>
+      </div>
+
+      <div class="option-row" onclick="event.stopPropagation(); enviarNotificacao('${layout.id}')">
+        <div class="option-icon ico-orange">♧</div>
+        <div class="option-title">Enviar notificação para todos clientes que usam</div>
+        <div class="option-arrow">›</div>
+      </div>
+
+    </div>
+
+    <div class="data-title">DADOS DO LAYOUT:</div>
+
+    <div class="data-grid">
+      <div class="data-card">
+        <h3>QTD Dispositivos</h3>
+        <div>${layout.devicesCount || layout.qtdDispositivos || 0}</div>
+      </div>
+
+      <div class="data-card">
+        <h3>Última alteração</h3>
+        <div>${formatDate(layout.updatedAt || layout.createdAt)}</div>
+      </div>
+
+      <div class="data-card">
+        <h3>Localização logo</h3>
+        <div>${posText(layout.logoPosition)}</div>
+      </div>
+
+      <div class="data-card">
+        <h3>Exibir Apps</h3>
+        <div>${boolText(layout.showAppsButton)}</div>
+      </div>
+
+      <div class="data-card full">
+        <h3>Botões bloqueados</h3>
+        <div>${boolText(layout.buttonsLocked)}</div>
+      </div>
+
+      <div class="data-card">
+        <h3>Tamanho dos ícones</h3>
+        <div>${sizeText(layout.iconSize)}</div>
+      </div>
+
+      <div class="data-card">
+        <h3>Tamanho data e hora</h3>
+        <div>${sizeText(layout.clockSize)}</div>
+      </div>
+
+      <div class="data-card full">
+        <h3>Tamanho data de expiração</h3>
+        <div>${sizeText(layout.expireSize)}</div>
+      </div>
+
+      <div class="data-card">
+        <h3>Posição Banners</h3>
+        <div>${posText(layout.bannerPosition)}</div>
+      </div>
+
+      <div class="data-card">
+        <h3>Posição Data & Hora</h3>
+        <div>${posText(layout.datePosition)}</div>
+      </div>
+
+      <div class="data-card">
+        <h3>Tempo de troca Banners</h3>
+        <div>${layout.bannerInterval || 10} segundos</div>
+      </div>
+
+      <div class="data-card">
+        <h3>Update automático?</h3>
+        <div>${boolText(layout.autoUpdate)}</div>
+      </div>
+    </div>
+  `;
 }
 
 function toggleLayout(id){
@@ -455,35 +631,90 @@ function editarLayout(id){
   window.location.href = 'layout-editor.html?id=' + encodeURIComponent(id);
 }
 
+function escolherTema(id){
+  window.location.href = 'layout-editor.html?id=' + encodeURIComponent(id) + '&step=tema';
+}
+
 function escolherApps(id){
   window.location.href = 'addlayout.html?id=' + encodeURIComponent(id);
 }
 
-function visualizarLayout(id){
-  window.location.href = 'launcher.html?layout=' + encodeURIComponent(id);
+function escolherBanners(id){
+  alert('Função escolher banners será ligada depois.');
 }
 
-async function excluirLayout(id){
-  const ok = confirm('Deseja excluir este layout?');
-  if(!ok) return;
+function alterarNome(id){
+  const layout = allLayouts.find(l => String(l.id) === String(id));
+  if(!layout) return;
 
+  const novoNome = prompt('Novo nome do layout:', layout.name || '');
+
+  if(!novoNome) return;
+
+  salvarParcialLayout(id, {
+    name: novoNome
+  });
+}
+
+function appAutoStart(id){
+  alert('Função App auto start será ligada depois.');
+}
+
+function appForceUpdate(id){
+  alert('Função App force update será ligada depois.');
+}
+
+function packFundos(id){
+  alert('Função pack de planos de fundo será ligada depois.');
+}
+
+function alterarIcone(id){
+  alert('Função alterar ícone será ligada depois.');
+}
+
+function editarIcones(id){
+  alert('Função editar ícones exibidos será ligada depois.');
+}
+
+function verClientes(id){
+  window.location.href = 'devices.html?layoutId=' + encodeURIComponent(id);
+}
+
+function moverClientes(id){
+  alert('Função mover clientes será ligada depois.');
+}
+
+function enviarNotificacao(id){
+  alert('Função enviar notificação será ligada depois.');
+}
+
+async function salvarParcialLayout(id, body){
   try{
     const res = await fetch(API + '/layouts/' + encodeURIComponent(id), {
-      method:'DELETE'
+      method:'PUT',
+      headers:{
+        'Content-Type':'application/json'
+      },
+      body:JSON.stringify(body)
     });
 
     const data = await res.json();
 
     if(!res.ok || !data.ok){
-      throw new Error(data.message || 'Erro ao excluir layout');
+      throw new Error(data.message || 'Erro ao salvar layout');
     }
 
-    allLayouts = allLayouts.filter(l => String(l.id) !== String(id));
+    await loadLayouts();
+    openedLayoutId = id;
     renderLayouts();
 
   }catch(e){
-    showStatus(e.message || 'Erro ao excluir layout');
+    showStatus(e.message || 'Erro ao salvar alteração');
   }
+}
+
+function copiarLayout(){
+  alert('Função copiar layout será ligada depois.');
 }
 
 function buscarLayout(){
