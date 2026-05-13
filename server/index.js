@@ -349,11 +349,11 @@ app.post('/layouts', (req, res) => {
       datePosition: req.body.datePosition || 'left',
       bannerInterval: req.body.bannerInterval || 5,
       autoUpdate: req.body.autoUpdate || false,
-      banners: req.body.banners || [],
-      apps: req.body.apps || [],
-      mainApps: req.body.mainApps || [],
-      secondaryApps: req.body.secondaryApps || [],
-      links: req.body.links || [],
+      banners: Array.isArray(req.body.banners) ? req.body.banners : [],
+      apps: Array.isArray(req.body.apps) ? req.body.apps : [],
+      mainApps: Array.isArray(req.body.mainApps) ? req.body.mainApps : [],
+      secondaryApps: Array.isArray(req.body.secondaryApps) ? req.body.secondaryApps : [],
+      links: Array.isArray(req.body.links) ? req.body.links : [],
       createdAt: new Date().toISOString()
     };
 
@@ -376,24 +376,32 @@ app.put('/layouts/:id', (req, res) => {
       return res.status(404).json({ ok: false, message: 'Layout não encontrado' });
     }
 
+    const atual = layouts[index];
+
     layouts[index] = {
-      ...layouts[index],
-      name: req.body.name ?? layouts[index].name,
-      logo: req.body.logo ?? layouts[index].logo,
-      background: req.body.background ?? layouts[index].background,
-      backgroundId: req.body.backgroundId ?? layouts[index].backgroundId,
-      logoPosition: req.body.logoPosition ?? layouts[index].logoPosition,
-      buttonsLocked: req.body.buttonsLocked ?? layouts[index].buttonsLocked,
-      unlockPassword: req.body.unlockPassword ?? layouts[index].unlockPassword,
-      showAppsButton: req.body.showAppsButton ?? layouts[index].showAppsButton,
-      iconSize: req.body.iconSize ?? layouts[index].iconSize,
-      clockSize: req.body.clockSize ?? layouts[index].clockSize,
-      expireSize: req.body.expireSize ?? layouts[index].expireSize,
-      bannerPosition: req.body.bannerPosition ?? layouts[index].bannerPosition,
-      datePosition: req.body.datePosition ?? layouts[index].datePosition,
-      bannerInterval: req.body.bannerInterval ?? layouts[index].bannerInterval,
-      autoUpdate: req.body.autoUpdate ?? layouts[index].autoUpdate,
-      banners: req.body.banners ?? layouts[index].banners,
+      ...atual,
+      name: req.body.name ?? atual.name,
+      logo: req.body.logo ?? atual.logo,
+      background: req.body.background ?? atual.background,
+      backgroundId: req.body.backgroundId ?? atual.backgroundId,
+      logoPosition: req.body.logoPosition ?? atual.logoPosition,
+      buttonsLocked: req.body.buttonsLocked ?? atual.buttonsLocked,
+      unlockPassword: req.body.unlockPassword ?? atual.unlockPassword,
+      showAppsButton: req.body.showAppsButton ?? atual.showAppsButton,
+      iconSize: req.body.iconSize ?? atual.iconSize,
+      clockSize: req.body.clockSize ?? atual.clockSize,
+      expireSize: req.body.expireSize ?? atual.expireSize,
+      bannerPosition: req.body.bannerPosition ?? atual.bannerPosition,
+      datePosition: req.body.datePosition ?? atual.datePosition,
+      bannerInterval: req.body.bannerInterval ?? atual.bannerInterval,
+      autoUpdate: req.body.autoUpdate ?? atual.autoUpdate,
+
+      banners: Array.isArray(req.body.banners) ? req.body.banners : (atual.banners || []),
+      apps: Array.isArray(req.body.apps) ? req.body.apps : (atual.apps || []),
+      mainApps: Array.isArray(req.body.mainApps) ? req.body.mainApps : (atual.mainApps || []),
+      secondaryApps: Array.isArray(req.body.secondaryApps) ? req.body.secondaryApps : (atual.secondaryApps || []),
+      links: Array.isArray(req.body.links) ? req.body.links : (atual.links || []),
+
       updatedAt: new Date().toISOString()
     };
 
