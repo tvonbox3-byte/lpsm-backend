@@ -1,14 +1,416 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LAUNCHER BOX - Meus Layouts</title>
+<link rel="stylesheet" href="css/style.css">
+
+<style>
+body{
+  background:#061426;
+  color:#fff;
+  margin:0;
+  font-family:Arial, Helvetica, sans-serif;
+  padding-bottom:70px;
+}
+
+.layouts-page{
+  padding-bottom:80px;
+}
+
+.layouts-hero{
+  padding:10px 18px 26px;
+}
+
+.layouts-hero h1{
+  margin:0 0 14px;
+  font-size:38px;
+  font-weight:800;
+}
+
+.layouts-hero p{
+  margin:0;
+  font-size:18px;
+  color:#fff;
+}
+
+.layouts-credit-box{
+  margin:4px 18px 52px;
+  background:#0b1f3a;
+  border-radius:6px;
+  padding:0 18px 20px;
+}
+
+.layouts-credit-title{
+  text-align:center;
+  font-size:14px;
+  font-weight:700;
+  padding:0 0 12px;
+}
+
+.layouts-credit-grid{
+  display:grid;
+  grid-template-columns:1fr 1.4fr 1fr;
+  gap:18px;
+  align-items:start;
+}
+
+.layouts-credit-side{
+  display:flex;
+  justify-content:center;
+  padding-top:18px;
+}
+
+.layouts-credit-center{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
+}
+
+.blue-action{
+  width:100%;
+  height:52px;
+  border:none;
+  border-radius:5px;
+  background:#287df3;
+  color:#fff;
+  font-size:22px;
+  cursor:pointer;
+  margin-bottom:28px;
+}
+
+.layouts-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  padding:16px 0 18px;
+  align-items:center;
+}
+
+.small-gray-btn{
+  width:86px;
+  height:44px;
+  border:none;
+  border-radius:6px;
+  background:#7c8da6;
+  color:#fff;
+  font-weight:700;
+  cursor:pointer;
+  justify-self:center;
+}
+
+.layouts-label{
+  padding:0 18px 18px;
+  font-size:14px;
+  font-weight:700;
+}
+
+.layouts-container{
+  border-top:1px solid rgba(255,255,255,.08);
+}
+
+.layout-row{
+  min-height:63px;
+  display:flex;
+  align-items:center;
+  gap:18px;
+  padding:0 18px;
+  background:#0b1f3a;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  cursor:pointer;
+}
+
+.layout-thumb{
+  width:26px;
+  height:26px;
+  object-fit:cover;
+  opacity:.9;
+}
+
+.layout-name{
+  flex:1;
+  font-size:18px;
+}
+
+.layout-arrow{
+  color:#415574;
+  font-size:30px;
+}
+
+.layout-menu{
+  display:none;
+  background:#07182f;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  padding:12px 18px 18px;
+}
+
+.layout-menu.show{
+  display:block;
+}
+
+.menu-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+}
+
+.menu-item{
+  min-height:42px;
+  border-radius:6px;
+  background:#102748;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#fff;
+  font-size:14px;
+  cursor:pointer;
+  border:none;
+}
+
+.menu-item.green{
+  background:#22a957;
+}
+
+.menu-item.red{
+  background:#c93b3b;
+}
+
+.empty-box{
+  margin:18px;
+  padding:20px;
+  background:#0b1f3a;
+  border-radius:8px;
+  color:#dce7fb;
+}
+
+.status{
+  margin:18px;
+  padding:14px;
+  border-radius:8px;
+  background:#c93b3b;
+  display:none;
+}
+
+.status.show{
+  display:block;
+}
+
+@media(max-width:900px){
+  .layouts-credit-grid{
+    grid-template-columns:1fr;
+  }
+
+  .menu-grid{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .layouts-hero h1{
+    font-size:32px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div id="drawerOverlay" class="drawer-overlay"></div>
+
+<aside id="drawer" class="drawer">
+  <div class="drawer-profile">
+    <div class="drawer-profile-avatar">
+      <img
+        id="drawerProfileImage"
+        src="https://via.placeholder.com/56x56.png?text=LP"
+        alt="Imagem"
+        onerror="this.style.display='none'; document.getElementById('drawerProfileFallback').style.display='flex';"
+      >
+      <div id="drawerProfileFallback" class="drawer-profile-fallback" style="display:none;">LP</div>
+    </div>
+
+    <div class="drawer-profile-info">
+      <div class="drawer-profile-name" id="drawerUserName">lpzovendas vacaria rs</div>
+      <div class="drawer-profile-phone" id="drawerUserPhone">📱 54997146384</div>
+    </div>
+
+    <button id="drawerClose" class="drawer-profile-close">×</button>
+  </div>
+
+  <div class="drawer-menu">
+    <a class="drawer-menu-row" href="launcher.html">
+      <div class="drawer-menu-left">
+        <div class="drawer-menu-icon">🧩</div>
+        <span>Gerenciar launcher</span>
+      </div>
+      <span class="drawer-menu-arrow">›</span>
+    </a>
+
+    <a class="drawer-menu-row" href="devices.html">
+      <div class="drawer-menu-left">
+        <div class="drawer-menu-icon">📁</div>
+        <span>Gerenciar clientes</span>
+      </div>
+      <span class="drawer-menu-arrow">›</span>
+    </a>
+
+    <a class="drawer-menu-row" href="resellers.html">
+      <div class="drawer-menu-left">
+        <div class="drawer-menu-icon">👥</div>
+        <span>Gerenciar revendas</span>
+      </div>
+      <span class="drawer-menu-arrow">›</span>
+    </a>
+
+    <a class="drawer-menu-row" href="configuracoes.html">
+      <div class="drawer-menu-left">
+        <div class="drawer-menu-icon drawer-menu-icon-dark">⚙</div>
+        <span>Configurações</span>
+      </div>
+      <span class="drawer-menu-arrow">›</span>
+    </a>
+  </div>
+</aside>
+
+<header class="topbar">
+  <div class="topbar-left">
+    <button id="menuBtn" class="icon-btn">☰</button>
+  </div>
+
+  <div class="topbar-center-title">LAUNCHER BOX</div>
+
+  <div class="topbar-right">
+    <button class="icon-btn bell-btn">♧</button>
+  </div>
+</header>
+
+<main class="layouts-page">
+
+  <section class="layouts-hero">
+    <h1>Meus Layouts</h1>
+    <p>Aqui você poderá gerenciar seus layouts existentes e/ou criar novos.</p>
+  </section>
+
+  <section class="layouts-credit-box">
+    <div class="layouts-credit-title">SEUS CRÉDITOS</div>
+
+    <div class="layouts-credit-grid">
+      <div class="layouts-credit-side">
+        <div class="mini-pill">
+          <span class="mini-pill-icon">›</span>
+          <span class="mini-pill-text">ANUAL:</span>
+          <span class="mini-pill-value">1</span>
+        </div>
+      </div>
+
+      <div class="layouts-credit-center">
+        <div class="long-pill">
+          <span class="long-pill-icon">▦</span>
+          <span class="long-pill-label">Validade dos créditos:</span>
+          <span class="long-pill-value">15/11/2026 - 19:50</span>
+        </div>
+
+        <div class="long-pill">
+          <span class="long-pill-icon">▦</span>
+          <span class="long-pill-label">Limite de layouts:</span>
+          <span class="long-pill-value" id="layoutLimitValue">0</span>
+        </div>
+
+        <div class="long-pill">
+          <span class="long-pill-icon">▴</span>
+          <span class="long-pill-label">Limite de aplicativos:</span>
+          <span class="long-pill-value">2</span>
+        </div>
+      </div>
+
+      <div class="layouts-credit-side">
+        <div class="mini-pill">
+          <span class="mini-pill-icon">›</span>
+          <span class="mini-pill-text">2 ANOS:</span>
+          <span class="mini-pill-value">0</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <button class="blue-action" onclick="window.location.href='addlayout.html'">ADD LAYOUT</button>
+
+  <button class="blue-action" onclick="alert('Função copiar layout será ajustada depois.')">COPIAR LAYOUT</button>
+
+  <div class="layouts-actions">
+    <button class="small-gray-btn" onclick="loadLayouts()">EXIBIR</button>
+    <button class="small-gray-btn" onclick="buscarLayout()">BUSCAR</button>
+  </div>
+
+  <div class="layouts-label">LAYOUTS MEUS:</div>
+
+  <div id="statusBox" class="status"></div>
+
+  <div id="layoutsContainer" class="layouts-container">
+    <div class="empty-box">Carregando layouts...</div>
+  </div>
+
+</main>
+
+<nav class="bottom-nav-home">
+  <a class="bottom-home-item" href="dashboard.html">
+    <span class="bottom-home-icon">⌂</span>
+  </a>
+
+  <a class="bottom-home-item" href="https://wa.me/" target="_blank">
+    <span class="bottom-home-icon">◔</span>
+  </a>
+
+  <a class="bottom-home-item" href="devices.html">
+    <span class="bottom-home-icon">▭</span>
+  </a>
+
+  <a class="bottom-home-item active" href="launcher.html">
+    <span class="bottom-home-icon">▦</span>
+  </a>
+
+  <a class="bottom-home-item" href="#">
+    <span class="bottom-home-icon">↑</span>
+  </a>
+</nav>
+
 <script>
+const API = window.location.origin;
+
 let allLayouts = [];
 let openedLayoutId = null;
 
 function showStatus(msg){
-  document.getElementById('statusBox').innerHTML = msg;
-  document.getElementById('statusBox').classList.add('show');
+  const box = document.getElementById('statusBox');
+  box.innerHTML = msg;
+  box.classList.add('show');
+}
+
+function hideStatus(){
+  const box = document.getElementById('statusBox');
+  box.innerHTML = '';
+  box.classList.remove('show');
+}
+
+function imgUrl(layout){
+  return layout.logo || layout.background || 'https://cdn-icons-png.flaticon.com/512/1829/1829586.png';
+}
+
+function safeText(value){
+  return String(value || '').replace(/[<>&"]/g, function(c){
+    return {
+      '<':'&lt;',
+      '>':'&gt;',
+      '&':'&amp;',
+      '"':'&quot;'
+    }[c];
+  });
 }
 
 function renderLayouts(){
   const container = document.getElementById('layoutsContainer');
+  const limit = document.getElementById('layoutLimitValue');
+
+  limit.innerText = Math.max(0, 20 - allLayouts.length);
 
   if(!allLayouts.length){
     container.innerHTML = '<div class="empty-box">Nenhum layout encontrado.</div>';
@@ -18,18 +420,26 @@ function renderLayouts(){
   container.innerHTML = '';
 
   allLayouts.forEach(layout => {
-    const isOpen = openedLayoutId === layout.id;
+    const isOpen = String(openedLayoutId) === String(layout.id);
 
     container.innerHTML += `
       <div class="layout-row" onclick="toggleLayout('${layout.id}')">
-        <img class="layout-thumb" src="${layout.logo || layout.background || 'https://cdn-icons-png.flaticon.com/512/1829/1829586.png'}">
-        <div class="layout-name">${layout.name}</div>
+        <img class="layout-thumb" src="${imgUrl(layout)}" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1829/1829586.png'">
+        <div class="layout-name">${safeText(layout.name || 'Layout sem nome')}</div>
         <div class="layout-arrow">${isOpen ? '⌃' : '⌄'}</div>
       </div>
 
       <div class="layout-menu ${isOpen ? 'show' : ''}">
-        <div class="menu-item">
-          <div class="menu-text">Apps principais: ${layout.mainApps?.length || 0}</div>
+        <div class="menu-grid">
+          <button class="menu-item" onclick="event.stopPropagation(); editarLayout('${layout.id}')">Editar</button>
+          <button class="menu-item" onclick="event.stopPropagation(); escolherApps('${layout.id}')">Apps</button>
+          <button class="menu-item green" onclick="event.stopPropagation(); visualizarLayout('${layout.id}')">Ver</button>
+          <button class="menu-item red" onclick="event.stopPropagation(); excluirLayout('${layout.id}')">Excluir</button>
+        </div>
+
+        <div style="margin-top:14px;color:#b8c7dd;font-size:14px;">
+          Apps principais: ${layout.mainApps?.length || 0} |
+          Apps secundários: ${layout.secondaryApps?.length || 0}
         </div>
       </div>
     `;
@@ -37,28 +447,116 @@ function renderLayouts(){
 }
 
 function toggleLayout(id){
-  openedLayoutId = openedLayoutId === id ? null : id;
+  openedLayoutId = String(openedLayoutId) === String(id) ? null : id;
   renderLayouts();
 }
 
-async function loadLayouts(){
+function editarLayout(id){
+  window.location.href = 'layout-editor.html?id=' + encodeURIComponent(id);
+}
+
+function escolherApps(id){
+  window.location.href = 'addlayout.html?id=' + encodeURIComponent(id);
+}
+
+function visualizarLayout(id){
+  window.location.href = 'launcher.html?layout=' + encodeURIComponent(id);
+}
+
+async function excluirLayout(id){
+  const ok = confirm('Deseja excluir este layout?');
+  if(!ok) return;
+
   try{
-    const res = await fetch(window.location.origin + '/layouts');
+    const res = await fetch(API + '/layouts/' + encodeURIComponent(id), {
+      method:'DELETE'
+    });
+
+    const data = await res.json();
+
+    if(!res.ok || !data.ok){
+      throw new Error(data.message || 'Erro ao excluir layout');
+    }
+
+    allLayouts = allLayouts.filter(l => String(l.id) !== String(id));
+    renderLayouts();
+
+  }catch(e){
+    showStatus(e.message || 'Erro ao excluir layout');
+  }
+}
+
+function buscarLayout(){
+  const termo = prompt('Digite o nome do layout:');
+
+  if(!termo){
+    renderLayouts();
+    return;
+  }
+
+  const filtrados = allLayouts.filter(layout =>
+    String(layout.name || '').toLowerCase().includes(termo.toLowerCase())
+  );
+
+  const backup = allLayouts;
+  allLayouts = filtrados;
+  renderLayouts();
+  allLayouts = backup;
+}
+
+async function loadLayouts(){
+  hideStatus();
+
+  try{
+    const res = await fetch(API + '/layouts');
     const data = await res.json();
 
     if(Array.isArray(data)){
       allLayouts = data;
-    } else {
+    }else{
       allLayouts = [];
     }
 
     renderLayouts();
 
-  } catch(e){
+  }catch(e){
     console.error(e);
-    showStatus('Erro ao carregar layouts (API)');
+    showStatus('Erro ao carregar layouts. Verifique se o servidor está ligado.');
   }
 }
 
-document.addEventListener('DOMContentLoaded', loadLayouts);
+function setupDrawer(){
+  const drawer = document.getElementById('drawer');
+  const overlay = document.getElementById('drawerOverlay');
+  const btn = document.getElementById('menuBtn');
+  const close = document.getElementById('drawerClose');
+
+  if(btn){
+    btn.onclick = function(){
+      drawer.classList.add('open');
+      overlay.classList.add('show');
+    };
+  }
+
+  if(close){
+    close.onclick = fecharDrawer;
+  }
+
+  if(overlay){
+    overlay.onclick = fecharDrawer;
+  }
+
+  function fecharDrawer(){
+    drawer.classList.remove('open');
+    overlay.classList.remove('show');
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  setupDrawer();
+  loadLayouts();
+});
 </script>
+
+</body>
+</html>
