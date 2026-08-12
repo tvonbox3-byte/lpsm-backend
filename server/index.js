@@ -118,14 +118,41 @@ app.post('/login', (req, res) => {
     const settings = db.getSettings();
     const { email, password } = req.body;
 
-    if (email === settings.email && password === settings.masterPassword) {
-      return res.json({ ok: true });
+    const adminUser = String(
+      process.env.ADMIN_USER || settings.email || ''
+    ).trim();
+
+    const adminPassword = String(
+      process.env.ADMIN_PASSWORD || settings.masterPassword || ''
+    );
+
+    const loginDigitado = String(email || '').trim();
+    const senhaDigitada = String(password || '');
+
+    if (
+      loginDigitado === adminUser &&
+      senhaDigitada === adminPassword
+    ) {
+      return res.json({
+        ok: true,
+        user: {
+          login: adminUser
+        }
+      });
     }
 
-    res.status(401).json({ ok: false, message: 'Login inválido' });
+    return res.status(401).json({
+      ok: false,
+      message: 'Login inválido'
+    });
+
   } catch (e) {
-    console.log(e);
-    res.status(500).json({ ok: false, message: 'Erro no login' });
+    console.error('Erro no login:', e);
+
+    return res.status(500).json({
+      ok: false,
+      message: 'Erro no login'
+    });
   }
 });
 
@@ -137,7 +164,10 @@ app.get('/apps', (req, res) => {
     res.json(db.getApps());
   } catch (e) {
     console.log(e);
-    res.status(500).json({ ok: false, message: 'Erro ao carregar aplicativos' });
+    res.status(500).json({
+      ok: false,
+      message: 'Erro ao carregar aplicativos'
+    });
   }
 });
 
@@ -165,17 +195,26 @@ app.post('/apps', (req, res) => {
     res.json({ ok: true, app: novo });
   } catch (e) {
     console.log(e);
-    res.status(500).json({ ok: false, message: 'Erro ao salvar aplicativo' });
+    res.status(500).json({
+      ok: false,
+      message: 'Erro ao salvar aplicativo'
+    });
   }
 });
 
 app.put('/apps/:id', (req, res) => {
   try {
     const apps = db.getApps();
-    const index = apps.findIndex(appItem => String(appItem.id) === String(req.params.id));
+
+    const index = apps.findIndex(
+      appItem => String(appItem.id) === String(req.params.id)
+    );
 
     if (index === -1) {
-      return res.status(404).json({ ok: false, message: 'Aplicativo não encontrado' });
+      return res.status(404).json({
+        ok: false,
+        message: 'Aplicativo não encontrado'
+      });
     }
 
     apps[index] = {
@@ -192,34 +231,55 @@ app.put('/apps/:id', (req, res) => {
 
     db.saveApps(apps);
 
-    res.json({ ok: true, app: apps[index] });
+    res.json({
+      ok: true,
+      app: apps[index]
+    });
   } catch (e) {
     console.log(e);
-    res.status(500).json({ ok: false, message: 'Erro ao editar aplicativo' });
+
+    res.status(500).json({
+      ok: false,
+      message: 'Erro ao editar aplicativo'
+    });
   }
 });
 
 app.delete('/apps/:id', (req, res) => {
   try {
     const apps = db.getApps();
-    const filtrados = apps.filter(appItem => String(appItem.id) !== String(req.params.id));
+
+    const filtrados = apps.filter(
+      appItem => String(appItem.id) !== String(req.params.id)
+    );
 
     db.saveApps(filtrados);
 
-    res.json({ ok: true });
+    res.json({
+      ok: true
+    });
   } catch (e) {
     console.log(e);
-    res.status(500).json({ ok: false, message: 'Erro ao excluir aplicativo' });
+
+    res.status(500).json({
+      ok: false,
+      message: 'Erro ao excluir aplicativo'
+    });
   }
 });
 
 app.post('/upload/apk', upload.single('file'), (req, res) => {
   try {
     if (!req.file) {
-      return res.status(400).json({ ok: false, message: 'Nenhum APK enviado' });
+      return res.status(400).json({
+        ok: false,
+        message: 'Nenhum APK enviado'
+      });
     }
 
-    const ext = path.extname(req.file.originalname || '').toLowerCase();
+    const ext = path.extname(
+      req.file.originalname || ''
+    ).toLowerCase();
 
     if (ext !== '.apk') {
       try {
@@ -241,14 +301,21 @@ app.post('/upload/apk', upload.single('file'), (req, res) => {
     });
   } catch (e) {
     console.log(e);
-    res.status(500).json({ ok: false, message: 'Erro ao enviar APK' });
+
+    res.status(500).json({
+      ok: false,
+      message: 'Erro ao enviar APK'
+    });
   }
 });
 
 app.post('/upload/icon', upload.single('imagem'), (req, res) => {
   try {
     if (!req.file) {
-      return res.status(400).json({ ok: false, message: 'Nenhuma imagem enviada' });
+      return res.status(400).json({
+        ok: false,
+        message: 'Nenhuma imagem enviada'
+      });
     }
 
     res.json({
@@ -258,7 +325,11 @@ app.post('/upload/icon', upload.single('imagem'), (req, res) => {
     });
   } catch (e) {
     console.log(e);
-    res.status(500).json({ ok: false, message: 'Erro ao enviar ícone' });
+
+    res.status(500).json({
+      ok: false,
+      message: 'Erro ao enviar ícone'
+    });
   }
 });
 
@@ -268,17 +339,27 @@ app.post('/upload/icon', upload.single('imagem'), (req, res) => {
 app.get('/backgrounds', (req, res) => {
   try {
     criarFundosPadrao();
-    res.json(db.getBackgrounds());
+
+    res.json(
+      db.getBackgrounds()
+    );
   } catch (e) {
     console.log(e);
-    res.status(500).json({ ok: false, message: 'Erro ao carregar fundos' });
+
+    res.status(500).json({
+      ok: false,
+      message: 'Erro ao carregar fundos'
+    });
   }
 });
 
 app.post('/backgrounds', upload.single('imagem'), (req, res) => {
   try {
     if (!req.file) {
-      return res.status(400).json({ ok: false, message: 'Nenhuma imagem enviada' });
+      return res.status(400).json({
+        ok: false,
+        message: 'Nenhuma imagem enviada'
+      });
     }
 
     const fundos = db.getBackgrounds();
@@ -293,10 +374,17 @@ app.post('/backgrounds', upload.single('imagem'), (req, res) => {
     fundos.push(novo);
     db.saveBackgrounds(fundos);
 
-    res.json({ ok: true, fundo: novo });
+    res.json({
+      ok: true,
+      fundo: novo
+    });
   } catch (e) {
     console.log(e);
-    res.status(500).json({ ok: false, message: 'Erro ao salvar fundo' });
+
+    res.status(500).json({
+      ok: false,
+      message: 'Erro ao salvar fundo'
+    });
   }
 });
 
@@ -305,26 +393,45 @@ app.post('/backgrounds', upload.single('imagem'), (req, res) => {
 // =====================
 app.get('/layouts', (req, res) => {
   try {
-    res.json(db.getLayouts());
+    res.json(
+      db.getLayouts()
+    );
   } catch (e) {
     console.log(e);
-    res.status(500).json({ ok: false, message: 'Erro ao carregar layouts' });
+
+    res.status(500).json({
+      ok: false,
+      message: 'Erro ao carregar layouts'
+    });
   }
 });
 
 app.get('/layouts/:id', (req, res) => {
   try {
     const layouts = db.getLayouts();
-    const layout = layouts.find(l => String(l.id) === String(req.params.id));
+
+    const layout = layouts.find(
+      l => String(l.id) === String(req.params.id)
+    );
 
     if (!layout) {
-      return res.status(404).json({ ok: false, message: 'Layout não encontrado' });
+      return res.status(404).json({
+        ok: false,
+        message: 'Layout não encontrado'
+      });
     }
 
-    res.json({ ok: true, layout });
+    res.json({
+      ok: true,
+      layout
+    });
   } catch (e) {
     console.log(e);
-    res.status(500).json({ ok: false, message: 'Erro ao carregar layout' });
+
+    res.status(500).json({
+      ok: false,
+      message: 'Erro ao carregar layout'
+    });
   }
 });
 
@@ -349,31 +456,54 @@ app.post('/layouts', (req, res) => {
       datePosition: req.body.datePosition || 'left',
       bannerInterval: req.body.bannerInterval || 5,
       autoUpdate: req.body.autoUpdate || false,
-      banners: Array.isArray(req.body.banners) ? req.body.banners : [],
-      apps: Array.isArray(req.body.apps) ? req.body.apps : [],
-      mainApps: Array.isArray(req.body.mainApps) ? req.body.mainApps : [],
-      secondaryApps: Array.isArray(req.body.secondaryApps) ? req.body.secondaryApps : [],
-      links: Array.isArray(req.body.links) ? req.body.links : [],
+      banners: Array.isArray(req.body.banners)
+        ? req.body.banners
+        : [],
+      apps: Array.isArray(req.body.apps)
+        ? req.body.apps
+        : [],
+      mainApps: Array.isArray(req.body.mainApps)
+        ? req.body.mainApps
+        : [],
+      secondaryApps: Array.isArray(req.body.secondaryApps)
+        ? req.body.secondaryApps
+        : [],
+      links: Array.isArray(req.body.links)
+        ? req.body.links
+        : [],
       createdAt: new Date().toISOString()
     };
 
     layouts.push(novo);
     db.saveLayouts(layouts);
 
-    res.json({ ok: true, layout: novo });
+    res.json({
+      ok: true,
+      layout: novo
+    });
   } catch (e) {
     console.log(e);
-    res.status(500).json({ ok: false, message: 'Erro ao salvar layout' });
+
+    res.status(500).json({
+      ok: false,
+      message: 'Erro ao salvar layout'
+    });
   }
 });
 
 app.put('/layouts/:id', (req, res) => {
   try {
     const layouts = db.getLayouts();
-    const index = layouts.findIndex(l => String(l.id) === String(req.params.id));
+
+    const index = layouts.findIndex(
+      l => String(l.id) === String(req.params.id)
+    );
 
     if (index === -1) {
-      return res.status(404).json({ ok: false, message: 'Layout não encontrado' });
+      return res.status(404).json({
+        ok: false,
+        message: 'Layout não encontrado'
+      });
     }
 
     const atual = layouts[index];
@@ -386,72 +516,133 @@ app.put('/layouts/:id', (req, res) => {
       backgroundId: req.body.backgroundId ?? atual.backgroundId,
       logoPosition: req.body.logoPosition ?? atual.logoPosition,
       buttonsLocked: req.body.buttonsLocked ?? atual.buttonsLocked,
-      unlockPassword: req.body.unlockPassword ?? atual.unlockPassword,
-      showAppsButton: req.body.showAppsButton ?? atual.showAppsButton,
+      unlockPassword:
+        req.body.unlockPassword ?? atual.unlockPassword,
+      showAppsButton:
+        req.body.showAppsButton ?? atual.showAppsButton,
       iconSize: req.body.iconSize ?? atual.iconSize,
       clockSize: req.body.clockSize ?? atual.clockSize,
       expireSize: req.body.expireSize ?? atual.expireSize,
-      bannerPosition: req.body.bannerPosition ?? atual.bannerPosition,
-      datePosition: req.body.datePosition ?? atual.datePosition,
-      bannerInterval: req.body.bannerInterval ?? atual.bannerInterval,
-      autoUpdate: req.body.autoUpdate ?? atual.autoUpdate,
+      bannerPosition:
+        req.body.bannerPosition ?? atual.bannerPosition,
+      datePosition:
+        req.body.datePosition ?? atual.datePosition,
+      bannerInterval:
+        req.body.bannerInterval ?? atual.bannerInterval,
+      autoUpdate:
+        req.body.autoUpdate ?? atual.autoUpdate,
 
-      banners: Array.isArray(req.body.banners) ? req.body.banners : (atual.banners || []),
-      apps: Array.isArray(req.body.apps) ? req.body.apps : (atual.apps || []),
-      mainApps: Array.isArray(req.body.mainApps) ? req.body.mainApps : (atual.mainApps || []),
-      secondaryApps: Array.isArray(req.body.secondaryApps) ? req.body.secondaryApps : (atual.secondaryApps || []),
-      links: Array.isArray(req.body.links) ? req.body.links : (atual.links || []),
+      banners: Array.isArray(req.body.banners)
+        ? req.body.banners
+        : (atual.banners || []),
+
+      apps: Array.isArray(req.body.apps)
+        ? req.body.apps
+        : (atual.apps || []),
+
+      mainApps: Array.isArray(req.body.mainApps)
+        ? req.body.mainApps
+        : (atual.mainApps || []),
+
+      secondaryApps: Array.isArray(req.body.secondaryApps)
+        ? req.body.secondaryApps
+        : (atual.secondaryApps || []),
+
+      links: Array.isArray(req.body.links)
+        ? req.body.links
+        : (atual.links || []),
 
       updatedAt: new Date().toISOString()
     };
 
     db.saveLayouts(layouts);
 
-    res.json({ ok: true, layout: layouts[index] });
+    res.json({
+      ok: true,
+      layout: layouts[index]
+    });
   } catch (e) {
     console.log(e);
-    res.status(500).json({ ok: false, message: 'Erro ao editar layout' });
+
+    res.status(500).json({
+      ok: false,
+      message: 'Erro ao editar layout'
+    });
   }
 });
 
 app.delete('/layouts/:id', (req, res) => {
   try {
     const layouts = db.getLayouts();
-    const filtrados = layouts.filter(l => String(l.id) !== String(req.params.id));
+
+    const filtrados = layouts.filter(
+      l => String(l.id) !== String(req.params.id)
+    );
 
     db.saveLayouts(filtrados);
 
-    res.json({ ok: true });
+    res.json({
+      ok: true
+    });
   } catch (e) {
     console.log(e);
-    res.status(500).json({ ok: false, message: 'Erro ao excluir layout' });
+
+    res.status(500).json({
+      ok: false,
+      message: 'Erro ao excluir layout'
+    });
   }
 });
 
+// =====================
 // SALVAR APPS NO LAYOUT
+// =====================
 app.put('/layouts/:id/apps', (req, res) => {
   try {
     const layouts = db.getLayouts();
-    const index = layouts.findIndex(l => String(l.id) === String(req.params.id));
+
+    const index = layouts.findIndex(
+      l => String(l.id) === String(req.params.id)
+    );
 
     if (index === -1) {
-      return res.status(404).json({ ok: false, message: 'Layout não encontrado' });
+      return res.status(404).json({
+        ok: false,
+        message: 'Layout não encontrado'
+      });
     }
 
     layouts[index] = {
       ...layouts[index],
-      apps: Array.isArray(req.body.apps) ? req.body.apps : [],
-      mainApps: Array.isArray(req.body.mainApps) ? req.body.mainApps : [],
-      secondaryApps: Array.isArray(req.body.secondaryApps) ? req.body.secondaryApps : [],
+
+      apps: Array.isArray(req.body.apps)
+        ? req.body.apps
+        : [],
+
+      mainApps: Array.isArray(req.body.mainApps)
+        ? req.body.mainApps
+        : [],
+
+      secondaryApps: Array.isArray(req.body.secondaryApps)
+        ? req.body.secondaryApps
+        : [],
+
       updatedAt: new Date().toISOString()
     };
 
     db.saveLayouts(layouts);
 
-    res.json({ ok: true, layout: layouts[index] });
+    res.json({
+      ok: true,
+      layout: layouts[index]
+    });
   } catch (e) {
     console.log(e);
-    res.status(500).json({ ok: false, message: 'Erro ao salvar apps no layout' });
+
+    res.status(500).json({
+      ok: false,
+      message: 'Erro ao salvar apps no layout'
+    });
   }
 });
 
@@ -460,10 +651,16 @@ app.put('/layouts/:id/apps', (req, res) => {
 // =====================
 app.get('/devices', (req, res) => {
   try {
-    res.json(getDevicesSafe());
+    res.json(
+      getDevicesSafe()
+    );
   } catch (e) {
     console.log(e);
-    res.status(500).json({ ok: false, message: 'Erro ao carregar dispositivos' });
+
+    res.status(500).json({
+      ok: false,
+      message: 'Erro ao carregar dispositivos'
+    });
   }
 });
 
@@ -472,7 +669,9 @@ app.get('/launcher/device/:code', (req, res) => {
     const code = normalizeCode(req.params.code);
     const devices = getDevicesSafe();
 
-    let device = devices.find(d => normalizeCode(d.code) === code);
+    let device = devices.find(
+      d => normalizeCode(d.code) === code
+    );
 
     if (!device) {
       device = {
@@ -500,27 +699,59 @@ app.get('/launcher/device/:code', (req, res) => {
       });
     }
 
-    const isActive = device.active === true || device.activated === true;
+    const isActive =
+      device.active === true ||
+      device.activated === true;
 
     const layouts = db.getLayouts();
     const apps = db.getApps();
 
-    const layout = layouts.find(l => String(l.id) === String(device.layoutId)) || null;
+    const layout =
+      layouts.find(
+        l => String(l.id) === String(device.layoutId)
+      ) || null;
 
-    const mainIds = layout && Array.isArray(layout.mainApps) ? layout.mainApps : [];
-    const secondaryIds = layout && Array.isArray(layout.secondaryApps) ? layout.secondaryApps : [];
-    const allIds = layout && Array.isArray(layout.apps) ? layout.apps : [...mainIds, ...secondaryIds];
+    const mainIds =
+      layout && Array.isArray(layout.mainApps)
+        ? layout.mainApps
+        : [];
 
-    const mainApps = apps.filter(appItem => mainIds.includes(appItem.id) && appItem.active !== false);
-    const secondaryApps = apps.filter(appItem => secondaryIds.includes(appItem.id) && appItem.active !== false);
-    const layoutApps = apps.filter(appItem => allIds.includes(appItem.id) && appItem.active !== false);
+    const secondaryIds =
+      layout && Array.isArray(layout.secondaryApps)
+        ? layout.secondaryApps
+        : [];
+
+    const allIds =
+      layout && Array.isArray(layout.apps)
+        ? layout.apps
+        : [...mainIds, ...secondaryIds];
+
+    const mainApps = apps.filter(
+      appItem =>
+        mainIds.includes(appItem.id) &&
+        appItem.active !== false
+    );
+
+    const secondaryApps = apps.filter(
+      appItem =>
+        secondaryIds.includes(appItem.id) &&
+        appItem.active !== false
+    );
+
+    const layoutApps = apps.filter(
+      appItem =>
+        allIds.includes(appItem.id) &&
+        appItem.active !== false
+    );
 
     res.json({
       ok: true,
       registered: true,
       active: isActive,
       activated: isActive,
-      message: isActive ? 'Dispositivo ativado' : 'Dispositivo aguardando ativação',
+      message: isActive
+        ? 'Dispositivo ativado'
+        : 'Dispositivo aguardando ativação',
       device,
       client: device.client || null,
       layoutId: device.layoutId || '',
@@ -528,45 +759,93 @@ app.get('/launcher/device/:code', (req, res) => {
       apps: layoutApps,
       mainApps,
       secondaryApps,
-      expiresAt: device.expiresAt || device.client?.expiresAt || null
+      expiresAt:
+        device.expiresAt ||
+        device.client?.expiresAt ||
+        null
     });
   } catch (e) {
     console.log(e);
-    res.status(500).json({ ok: false, message: 'Erro ao verificar dispositivo' });
+
+    res.status(500).json({
+      ok: false,
+      message: 'Erro ao verificar dispositivo'
+    });
   }
 });
 
 app.post('/devices/:id/complete-activation', (req, res) => {
   try {
     const devices = getDevicesSafe();
-    const index = devices.findIndex(d => String(d.id) === String(req.params.id));
+
+    const index = devices.findIndex(
+      d => String(d.id) === String(req.params.id)
+    );
 
     if (index === -1) {
-      return res.status(404).json({ ok: false, message: 'Dispositivo não encontrado' });
+      return res.status(404).json({
+        ok: false,
+        message: 'Dispositivo não encontrado'
+      });
     }
 
     devices[index] = {
       ...devices[index],
+
       registered: true,
       active: true,
       activated: true,
-      name: req.body.name || devices[index].name || '',
-      phone: req.body.phone || '',
-      notes: req.body.notes || '',
-      planName: req.body.planName || '',
-      expiresAt: req.body.expiresAt || null,
-      blockOnExpire: req.body.blockOnExpire || 'NÃO',
-      forceBlockWrongTime: req.body.forceBlockWrongTime || 'SIM',
-      allowDateSettings: req.body.allowDateSettings || 'NÃO',
-      layoutId: req.body.layoutId || '',
-      type: req.body.type || 'annual',
-      activatedAt: new Date().toISOString(),
+
+      name:
+        req.body.name ||
+        devices[index].name ||
+        '',
+
+      phone:
+        req.body.phone || '',
+
+      notes:
+        req.body.notes || '',
+
+      planName:
+        req.body.planName || '',
+
+      expiresAt:
+        req.body.expiresAt || null,
+
+      blockOnExpire:
+        req.body.blockOnExpire || 'NÃO',
+
+      forceBlockWrongTime:
+        req.body.forceBlockWrongTime || 'SIM',
+
+      allowDateSettings:
+        req.body.allowDateSettings || 'NÃO',
+
+      layoutId:
+        req.body.layoutId || '',
+
+      type:
+        req.body.type || 'annual',
+
+      activatedAt:
+        new Date().toISOString(),
+
       client: {
-        name: req.body.name || '',
-        phone: req.body.phone || '',
-        notes: req.body.notes || '',
-        plan: req.body.planName || '',
-        expiresAt: req.body.expiresAt || null
+        name:
+          req.body.name || '',
+
+        phone:
+          req.body.phone || '',
+
+        notes:
+          req.body.notes || '',
+
+        plan:
+          req.body.planName || '',
+
+        expiresAt:
+          req.body.expiresAt || null
       }
     };
 
@@ -581,17 +860,27 @@ app.post('/devices/:id/complete-activation', (req, res) => {
     });
   } catch (e) {
     console.log(e);
-    res.status(500).json({ ok: false, message: 'Erro ao ativar dispositivo' });
+
+    res.status(500).json({
+      ok: false,
+      message: 'Erro ao ativar dispositivo'
+    });
   }
 });
 
 app.put('/devices/:id', (req, res) => {
   try {
     const devices = getDevicesSafe();
-    const index = devices.findIndex(d => String(d.id) === String(req.params.id));
+
+    const index = devices.findIndex(
+      d => String(d.id) === String(req.params.id)
+    );
 
     if (index === -1) {
-      return res.status(404).json({ ok: false, message: 'Dispositivo não encontrado' });
+      return res.status(404).json({
+        ok: false,
+        message: 'Dispositivo não encontrado'
+      });
     }
 
     devices[index] = {
@@ -602,23 +891,42 @@ app.put('/devices/:id', (req, res) => {
 
     saveDevicesSafe(devices);
 
-    res.json({ ok: true, device: devices[index] });
+    res.json({
+      ok: true,
+      device: devices[index]
+    });
   } catch (e) {
     console.log(e);
-    res.status(500).json({ ok: false, message: 'Erro ao editar dispositivo' });
+
+    res.status(500).json({
+      ok: false,
+      message: 'Erro ao editar dispositivo'
+    });
   }
 });
 
 app.delete('/devices/:id', (req, res) => {
   try {
     const devices = getDevicesSafe();
-    const filtrados = devices.filter(device => String(device.id) !== String(req.params.id));
+
+    const filtrados = devices.filter(
+      device =>
+        String(device.id) !==
+        String(req.params.id)
+    );
 
     saveDevicesSafe(filtrados);
-    res.json({ ok: true });
+
+    res.json({
+      ok: true
+    });
   } catch (e) {
     console.log(e);
-    res.status(500).json({ ok: false, message: 'Erro ao excluir dispositivo' });
+
+    res.status(500).json({
+      ok: false,
+      message: 'Erro ao excluir dispositivo'
+    });
   }
 });
 
@@ -632,19 +940,23 @@ app.use((err, req, res, next) => {
     if (err.code === 'LIMIT_FILE_SIZE') {
       return res.status(413).json({
         ok: false,
-        message: 'Arquivo muito grande. Limite atual: 300MB.'
+        message:
+          'Arquivo muito grande. Limite atual: 300MB.'
       });
     }
 
     return res.status(400).json({
       ok: false,
-      message: 'Erro no upload: ' + err.message
+      message:
+        'Erro no upload: ' + err.message
     });
   }
 
   res.status(500).json({
     ok: false,
-    message: err.message || 'Erro interno do servidor'
+    message:
+      err.message ||
+      'Erro interno do servidor'
   });
 });
 
@@ -653,5 +965,9 @@ app.use((err, req, res, next) => {
 // =====================
 app.listen(PORT, () => {
   criarFundosPadrao();
-  console.log('Servidor rodando na porta:', PORT);
+
+  console.log(
+    'Servidor rodando na porta:',
+    PORT
+  );
 });
